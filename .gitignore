@@ -1,0 +1,31 @@
+# .iml files
+*.iml
+
+## File-based project format:
+*.ipr
+*.iws
+*.ids
+
+#all files in .idea directory
+.idea/
+/cmake-build-debug/
+venv/
+
+# IntelliJ
+/out/
+
+# DB-files:
+*.db
+
+# Deployment properites
+**.cdm.cluster-deployment/*.properties
+
+### target directories
+**/target/
+**/logs/
+**/log/
+
+ignite.properties
+
+*.log
+
