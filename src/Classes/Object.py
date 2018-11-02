@@ -14,3 +14,18 @@ class Object:
 
     def draw(self):
         self.tile.draw()
+
+    def get_x(self):
+        return self.x
+
+    def set_x(self, x):
+        self.x = x
+
+    def get_y(self):
+        return self.y
+
+    def set_y(self, y):
+        self.y = y
+
+    def get_info(self):
+        return self.info

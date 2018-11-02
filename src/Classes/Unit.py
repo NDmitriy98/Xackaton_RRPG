@@ -2,13 +2,14 @@ from src.Classes.Object import Object
 
 
 class Unit(Object):
-    def __init__(self, hp=10, mp=10, attack=0, protection=0):
+    def __init__(self, hp=10, mp=10, attack=0, protection=0, level=0):
         super().__init__()
         self.info = "Unit"
         self.hp = hp
         self.mp = mp
         self.attack = attack
         self.protection = protection
+        self.level = level
 
     def get_hp(self):
         return self.hp
