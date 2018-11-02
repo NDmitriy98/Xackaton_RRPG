@@ -4,7 +4,7 @@ pg.init()
 gameDisplay = pg.display.set_mode((800, 600))
 pg.display.set_caption('A Bit Racey')
 clock = pg.time.Clock()
-
+#kek
 crashed = False
 
 while not crashed:
