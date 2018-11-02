@@ -1,5 +1,6 @@
 from src.Point.Point import *
 from src.Tile import *
+from src.tile_list import *
 import random
 
 MIN_MAP_SIZE = 50
@@ -9,6 +10,7 @@ MIN_ROOM_SIZE = 5
 MAX_ROOM_SIZE = 12
 
 MAX_ROOMS = 12
+
 
 class Room:
 
@@ -23,8 +25,6 @@ class Room:
                self.x2 >= room.x1 and \
                self.y1 <= room.y2 and \
                self.y2 >= room.y1
-    
-
 
     @property
     def center(self):
@@ -36,17 +36,16 @@ class Room:
 
 class Map:
 
-
     def __init__(self):
         self.width = random.randint(MIN_MAP_SIZE, MAX_MAP_SIZE - MIN_MAP_SIZE)
         self.height = random.randint(MIN_MAP_SIZE, MAX_MAP_SIZE - MIN_MAP_SIZE)
         self.body = [[Tile(BACK_TILE, False)
-                      for y in range(self.height) ]
-                        for x in range(self.width)]
+                      for y in range(self.height)]
+                     for x in range(self.width)]
         self.roomCount = 0
         self.rooms = []
 
-    def roomGen(self):
+    def room_gen(self):
         for i in range(MAX_ROOMS):
             for j in range(1000):
                 room_w = MIN_ROOM_SIZE + random.randint(0, MAX_ROOM_SIZE - MIN_ROOM_SIZE)
@@ -75,7 +74,75 @@ class Map:
                         self.roomCount += 1
                         break
 
+    def set_edges(self):
+        for room in self.rooms:
+            self.body[room.y1][room.x1] = Tile(WALL_TILE, False)
+            self.body[room.y1][room.x2] = Tile(WALL_TILE, False)
+            self.body[room.y2][room.x1] = Tile(WALL_TILE, False)
+            self.body[room.y2][room.x2] = Tile(WALL_TILE, False)
+
+    def connect_two_rooms(self, room1, room2):
+        pass
+
+    def connect_rooms(self):
+        for i in range(0, self.roomCount - 1):
+            self.connectTwoRooms(self.rooms[i], self.rooms[i + 1])
+
+    def set_walls(self):
+        for room in self.rooms:
+            for i in range(room.x1, room.x2):
+                if self.body[room.y1][i].symbol == ROAD_TILE:
+                    continue
+                self.body[room.y1][i].symbol = WALL_TILE
+
+            for i in range(room.x1, room.x2):
+                if self.body[room.y2][i].symbol == ROAD_TILE:
+                    continue
+                self.body[room.y2][i].symbol = WALL_TILE
+
+            for i in range(room.y1, room.y2):
+                if self.body[i][room.x1].symbol == ROAD_TILE:
+                    continue
+                self.body[i][room.x1].symbol = WALL_TILE
+
+            for i in range(room.y1, room.y2):
+                if self.body[i][room.x2].symbol == ROAD_TILE:
+                    continue
+                self.body[i][room.x2].symbol = WALL_TILE
+
+    def set_doors(self):
+        for room in self.rooms:
+            for i in range(room.x1+1, room.x2):
+                if (self.body[room.y1][i].symbol == ROAD_TILE) and \
+                        (self.body[room.y1][i+1].symbol == WALL_TILE) and \
+                        self.body[room.y1][i-1].symbol == WALL_TILE:
+                    self.body[room.y1][i].symbol = DOOR_TILE
+
+            for i in range(room.x1+1, room.x2):
+                if (self.body[room.y2][i].symbol == ROAD_TILE) and \
+                        (self.body[room.y2][i+1].symbol == WALL_TILE) and \
+                        self.body[room.y2][i-1].symbol == WALL_TILE:
+                    self.body[room.y2][i].symbol = DOOR_TILE
+
+            for i in range(room.y1+1, room.y2):
+                if (self.body[i][room.x1].symbol == ROAD_TILE) and \
+                        (self.body[i+1][room.x1].symbol == WALL_TILE) and \
+                        self.body[i-1][room.x1].symbol == WALL_TILE:
+                    self.body[i][room.x1].symbol = DOOR_TILE
+
+            for i in range(room.y1+1, room.y2):
+                if (self.body[i][room.x2].symbol == ROAD_TILE) and \
+                        (self.body[i+1][room.x2].symbol == WALL_TILE) and \
+                        self.body[i-1][room.x2].symbol == WALL_TILE:
+                    self.body[i][room.x2].symbol = DOOR_TILE
 
 
+    def set_moreWalls(self):
+        pass
 
+    def delete_roads(self):
+        for y in range(self.height):
+            for x in range(self.width):
+                if self.body[y][x] == ROAD_TILE:
+                    self.body[y][x] = FLOOR_TILE
 

@@ -1,8 +1,4 @@
-FLOOR_TILE = '-'
-WALL_TILE = '#'
-BACK_TILE = ' '
-DOOR_TILE = 'D'
-
+from src.tile_list import *
 class Tile:
 
     def __init__(self, symbol, visible, image=None):
