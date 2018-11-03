@@ -52,21 +52,24 @@ def main():
     bg = pg.Surface((WIN_WIDTH, WIN_HEIGHT))
     ##########################
     hero = Character.Character()
-    hero.set_pos(WIN_WIDTH / 2, WIN_HEIGHT / 2)
+    hero.set_pos(100, WIN_HEIGHT / 2)
     ##########################
     # entities = pg.sprite.Group()
     # platforms = []
     # entities.add(hero)
+    entities = pg.sprite.Group()
+    #entities.add(hero)
+
     map = [
         "##########################",
         "#--###---###############",
-        "#--###-------##",
-        "#--#########-##",
-        "#------------##",
-        "#####-#########",
-        "#####-#########",
-        "####---########",
-        "###############"
+        "#--###-------############",
+        "#--#########-############",
+        "#--------------##########",
+        "#####-#######--##########",
+        "#####-###################",
+        "####---##################",
+        "#########################"
     ]
     clock = pg.time.Clock()
 
@@ -116,16 +119,20 @@ def main():
                 start_x = -delta_x
                 start_y = -delta_y
 
-                print("x = " + str(hero.x) + " delta = " + str(delta_x) + " click to " + str(pos[0]))
-                print("y = " + str(hero.y) + " delta = " + str(delta_y) + " click to " + str(pos[1]))
+                #print("x = " + str(hero.x) + " delta = " + str(delta_x) + " click to " + str(pos[0]))
+                #print("y = " + str(hero.y) + " delta = " + str(delta_y) + " click to " + str(pos[1]))
 
-                hero.set_pos(pos[0] - 25, pos[1] - 25)
+                hero.set_pos(pos[0], pos[1])
+                hero.rect = Rect(pos[0], pos[1], WIN_WIDTH, WIN_HEIGHT)
         hero.move(step_x, step_y)
 
 
         display.fill(BACKGROUND_COLOR)
 
+        bl = Block(0,0)
+        #print("before" + str(camera.apply(bl).x) + " " + str(camera.apply(bl).y))
         camera.update(hero)
+        #print("after" + str(camera.apply(bl).x) + " " + str(camera.apply(bl).y))
         x = y = 0
         for row in map:
             for col in row:

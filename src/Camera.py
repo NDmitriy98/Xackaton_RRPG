@@ -9,7 +9,9 @@ class Camera(object):
         self.state = Rect(0, 0, width, height)
 
     def apply(self, target):
+        #print("apply " + str(self.state.x) + " " + str(self.state.y) )
         return target.rect.move(self.state.topleft)
 
     def update(self, target):
+        print("update " + str(self.state.x) + " " + str(self.state.y))
         self.state = self.camera_func(self.state, target.rect)

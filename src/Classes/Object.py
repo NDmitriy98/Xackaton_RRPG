@@ -1,7 +1,9 @@
+from pygame import sprite
+
 from src.Tile import Tile
 
 
-class Object:
+class Object(sprite.Sprite):
     def __init__(self, x=0, y=0, img=None):
         self.x = x
         self.y = y
