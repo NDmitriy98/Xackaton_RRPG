@@ -14,13 +14,24 @@ class Game:
 
     def new(self):  # Начало новой игры
         self.hero = Character.Character()
-        self.load_data()
+
 
         self.hero.set_pos(40, 60)
+        self.inventory = Inventory.Inventory(self.display, self.hero)
+        self.hero.inventory = self.inventory
+
+        heal_poition = Item.Item
+        heal_poition.img = pg.image.load('Drawable/heal.png')
+        self.hero.inventory.add_item(heal_poition)
+        self.hero.inventory.add_item(heal_poition)
+        self.hero.inventory.add_item(heal_poition)
+        self.hero.inventory.add_item(heal_poition)
+        self.hero.inventory.add_item(heal_poition)
+        self.hero.inventory.add_item(heal_poition)
         self.walls = Object.Object()
         self.floor = Object.Object()
 
-
+        self.load_data()
 
     def load_data(self):
         """self.map = [
@@ -54,6 +65,7 @@ class Game:
             self.update()
             self.render()
 
+            self.hero.inventory.render_inventory()
             # print("pos " + str(self.hero.x) + " " + str(self.hero.y))
 
             pg.display.update()
@@ -80,14 +92,14 @@ class Game:
                 pixels_x = block_x * BLOCK_WIDTH  # Позиция в пикселях
                 pixels_y = block_y * BLOCK_HEIGHT
 
-                if self.collision(block_x,block_y):
+                if self.collision(block_x, block_y):
                     self.hero.rect = Rect(pixels_x, pixels_y, BLOCK_WIDTH, BLOCK_HEIGHT)
 
     def collision(self, block_x, block_y):
         if len(self.map.body[0]) > block_x >= 0 and len(self.map.body) > block_y >= 0:
             if self.map.body[block_y][block_x] == FLOOR_TILE:
                 return True
-        return True
+        return False
 
     def update(self):
         self.camera.update(self.hero)

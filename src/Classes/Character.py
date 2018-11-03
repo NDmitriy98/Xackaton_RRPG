@@ -5,8 +5,9 @@ from src.Classes.Unit import Unit
 
 
 class Character(Unit):
-    def __init__(self, experience=0, weapon: Weapon.Weapon = None, armor: Armor.Armor = None, inventory: Item.Item = None):
+    def __init__(self, experience=0, weapon: Weapon.Weapon = None, armor: Armor.Armor = None, inventory = None):
         super().__init__()
+
         self.info = "Character"
         self.weapon = weapon
         self.armor = armor
