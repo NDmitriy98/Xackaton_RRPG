@@ -2,9 +2,10 @@ from src.Tile import Tile
 
 
 class Object:
-    def __init__(self, x=0, y=0):
+    def __init__(self, x=0, y=0, img=None):
         self.x = x
         self.y = y
+        self.img = img
         self.info = "Object"
         tile = Tile("", True)
 
@@ -14,6 +15,10 @@ class Object:
 
     def draw(self):
         self.tile.draw()
+
+    def set_pos(self, x, y):
+        self.x = x
+        self.y = y
 
     def get_x(self):
         return self.x

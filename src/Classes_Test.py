@@ -1,8 +1,7 @@
 from src.Classes import *
 
 main = Character.Character()
-main.x = 1
-main.y = 2
+main.set_pos(1, 2)
 print("Pos (" + main.info + "): = " + str(main.x) + ", " + str(main.y))
 main.move(3, 2)
 print("Pos: = " + str(main.x) + ", " + str(main.y))
