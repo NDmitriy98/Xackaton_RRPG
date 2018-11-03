@@ -2,6 +2,7 @@ from src.Point.Point import *
 from src.Tile import *
 from src.tile_list import *
 import src.a_star_path_find as aStar
+from src.Settings import *
 import random
 
 MIN_MAP_SIZE = 50
@@ -191,11 +192,21 @@ class Map:
         self.set_moreWalls()
         self.delete_roads()
 
-    def print_map(self):
-        for x, row in enumerate(self.body):
-            print('{:>2}'.format(x), end='')
+    def print_map(self, display, camera):
+        x = y = 0
+        for row in self.body:
             for t in row:
-                t.draw()
+                t.draw(x, y, display, camera)
+                x += BLOCK_WIDTH
+            y += BLOCK_HEIGHT
+            x = 0
+
+    def debug_print_map(self):
+        for row in self.body:
+            for t in row:
+                t.debug_draw()
             print()
+
+
 
 
