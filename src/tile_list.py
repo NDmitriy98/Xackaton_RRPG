@@ -1,5 +1,5 @@
 FLOOR_TILE = '-'
 WALL_TILE = '#'
-ROAD_TILE = '#'
+ROAD_TILE = 'R'
 BACK_TILE = ' '
 DOOR_TILE = 'D'

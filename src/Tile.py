@@ -5,6 +5,7 @@ class Tile:
         self.symbol = symbol
         self.image = image
         self.visible = visible
+        self.explored = False
 
     def draw(self):
         print(self.symbol, end='')

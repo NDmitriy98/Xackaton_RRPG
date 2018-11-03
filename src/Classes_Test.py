@@ -1,4 +1,10 @@
 from src.Classes import *
+import src.Map as Map
+
+my_map = Map.Map()
+my_map.generate_map()
+my_map.print_map()
+
 
 main = Character.Character()
 main.set_pos(1, 2)
