@@ -1,3 +1,5 @@
+from pygame.rect import Rect
+
 from src.Classes import Item, Armor, Weapon
 from src.Classes.Unit import Unit
 
@@ -12,6 +14,7 @@ class Character(Unit):
         self.experience = experience
         self.hp = 10
         self.level = 1
+        self.rect = Rect(self.x, self.y, 800, 600)  # прямоугольный объект
 
         if weapon:
             self.full_attack = self.attack + weapon.get_attack()  # Атака с учётом снаряжения
