@@ -1,44 +1,16 @@
 import pygame as pg
 from pygame.rect import Rect
 
+from src.Settings import *
 from src.Camera import Camera
 from src.Classes import *
-
-
-WIN_WIDTH = 800
-WIN_HEIGHT = 600
-DISPLAY = (WIN_WIDTH, WIN_HEIGHT)
-BACKGROUND_COLOR = (0, 255, 255)
-
-BLOCK_WIDTH = 50
-BLOCK_HEIGHT = 50
-
-
-class Block(pg.sprite.Sprite):
-    def __init__(self, x, y):
-        pg.sprite.Sprite.__init__(self)
-        self.image = pg.Surface((BLOCK_WIDTH, BLOCK_HEIGHT))
-        self.image.fill(BACKGROUND_COLOR)
-        self.rect = Rect(x, y, BLOCK_WIDTH, BLOCK_HEIGHT)
-
-def camera_configure(camera, target_rect):
-    l, t, _, _ = target_rect
-    _, _, w, h = camera
-    l, t = -l + WIN_WIDTH / 2, -t + WIN_HEIGHT / 2
-
-    l = min(0, l)  # Не движемся дальше левой границы
-    l = max(-(camera.width - WIN_WIDTH), l)  # Не движемся дальше правой границы
-    t = max(-(camera.height - WIN_HEIGHT), t)  # Не движемся дальше нижней границы
-    t = min(0, t)  # Не движемся дальше верхней границы
-    return Rect(l, t, w, h)
-
-
 
 
 
 def main():
 
-
+    temp_x = 0
+    temp_y = 0
 
     delta_x = 0
     delta_y = 0
@@ -80,8 +52,9 @@ def main():
     total_level_width = len(map[0]) * BLOCK_WIDTH
     total_level_height = len(map) * BLOCK_HEIGHT
     print("full: " + str(total_level_width), " " + str(total_level_height))
-    camera = Camera(camera_configure, total_level_width, total_level_height)
+    camera = Camera(total_level_width, total_level_height)
 
+    all_sprites = pg.sprite.Group()
     crashed = False
 
     step_x = 0
@@ -113,17 +86,20 @@ def main():
             if event.type == pg.MOUSEBUTTONDOWN:
                 pos = pg.mouse.get_pos()
 
-                delta_x = pos[0] - hero.x
-                delta_y = pos[1] - hero.y
+                block_x = int(pos[0]/BLOCK_WIDTH)
+                block_y = int(pos[1]/BLOCK_HEIGHT)
 
-                start_x = -delta_x
-                start_y = -delta_y
+                pixels_x = block_x * BLOCK_WIDTH
+                pixels_y = block_y * BLOCK_HEIGHT
 
-                #print("x = " + str(hero.x) + " delta = " + str(delta_x) + " click to " + str(pos[0]))
-                #print("y = " + str(hero.y) + " delta = " + str(delta_y) + " click to " + str(pos[1]))
 
-                hero.set_pos(pos[0], pos[1])
-                hero.rect = Rect(pos[0], pos[1], WIN_WIDTH, WIN_HEIGHT)
+
+                result = camera.apply(Block(pixels_x, pixels_y))
+                print("mouse " + str(result.x))
+
+                #hero.set_pos(pixels_x, pixels_y)
+                #hero.rect = Rect(result.x, result.y, WIN_WIDTH, WIN_HEIGHT)
+                hero.rect = Rect(pixels_x - temp_x, pixels_y - temp_y, BLOCK_WIDTH, BLOCK_HEIGHT)
         hero.move(step_x, step_y)
 
 
@@ -131,6 +107,7 @@ def main():
 
         bl = Block(0,0)
         #print("before" + str(camera.apply(bl).x) + " " + str(camera.apply(bl).y))
+        all_sprites.update()
         camera.update(hero)
         #print("after" + str(camera.apply(bl).x) + " " + str(camera.apply(bl).y))
         x = y = 0
@@ -146,8 +123,18 @@ def main():
             y += BLOCK_HEIGHT
             x = 0
 
-        block = Block(hero.x, hero.y)
-        display.blit(hero.img, camera.apply(block))
+        print("map " + str(camera.apply(Block(0, 0)).x))
+        temp_x = camera.apply(Block(0, 0)).x
+        temp_y = camera.apply(Block(0, 0)).y
+
+        #all_sprites.add(hero)
+        #block = Block(hero.rect.x, hero.rect.y)
+
+        display.blit(hero.img, camera.apply(hero))
+
+
+        print("temp x_y " + str(temp_x) + " " + str(temp_y))
+
 
         pg.display.update()
         clock.tick(60)

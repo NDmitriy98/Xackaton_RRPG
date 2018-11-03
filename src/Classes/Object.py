@@ -1,5 +1,7 @@
 from pygame import sprite
+from pygame.rect import Rect
 
+from src import Settings
 from src.Tile import Tile
 
 
@@ -9,6 +11,7 @@ class Object(sprite.Sprite):
         self.y = y
         self.img = img
         self.info = "Object"
+        self.rect = Rect(self.x, self.y, self.x + Settings.BLOCK_WIDTH, self.y + Settings.BLOCK_HEIGHT)
         tile = Tile("", True)
 
     def move(self, dx, dy):
