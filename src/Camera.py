@@ -4,14 +4,19 @@ from src.Classes import Object
 
 
 class Camera(object):
-    def __init__(self, camera_func, width, height):
-        self.camera_func = camera_func
-        self.state = Rect(0, 0, width, height)
+    def __init__(self, width, height):
+        self.camera = Rect(0, 0, width, height)
+        self.width = width
+        self.height = height
+        self.coefficient_x = 0
+        self.coefficient_y = 0
 
-    def apply(self, target):
-        #print("apply " + str(self.state.x) + " " + str(self.state.y) )
-        return target.rect.move(self.state.topleft)
+    def apply(self, entity):
+        return entity.rect.move(self.camera.topleft)
+
+
 
     def update(self, target):
-        print("update " + str(self.state.x) + " " + str(self.state.y))
-        self.state = self.camera_func(self.state, target.rect)
+        x = -target.rect.x + int(400)
+        y = -target.rect.y + int(300)
+        self.camera = Rect(x, y, self.width, self.height)
