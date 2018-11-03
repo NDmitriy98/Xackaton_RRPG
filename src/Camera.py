@@ -8,6 +8,8 @@ class Camera(object):
         self.camera = Rect(0, 0, width, height)
         self.width = width
         self.height = height
+        self.coefficient_x = 0
+        self.coefficient_y = 0
 
     def apply(self, entity):
         return entity.rect.move(self.camera.topleft)

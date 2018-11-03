@@ -1,146 +1,114 @@
-import pygame as pg
-from pygame.rect import Rect
-
 from src.Settings import *
 from src.Camera import Camera
 from src.Classes import *
 
 
+class Game:
+    def __init__(self):
+        pg.init()
+        self.display = pg.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
+        pg.display.set_caption('RRPG ' + GAME_VERSION)
+        self.clock = pg.time.Clock()
 
-def main():
+    def new(self):  # Начало новой игры
+        self.hero = Character.Character()
+        self.hero.set_pos(50, 50)
+        self.walls = Object.Object()
+        self.floor = Object.Object()
 
-    temp_x = 0
-    temp_y = 0
+        self.load_data()
 
-    delta_x = 0
-    delta_y = 0
+    def load_data(self):
+        self.map = [
+            "##########################",
+            "#--###---###############",
+            "#--###-------############",
+            "#--#########-############",
+            "#--------------##########",
+            "#####-#######--##########",
+            "#####-###################",
+            "####---##################",
+            "#########################"]
 
-    start_x = 0
-    start_y = 0
+        self.hero.img = pg.image.load('Drawable/1.png')
+        self.walls.img = pg.image.load('Drawable/wall.png')
+        self.floor.img = pg.image.load('Drawable/floor.png')
 
-    pg.init()
-    display = pg.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
-    pg.display.set_caption('RRPG alpha 0.1')
-    bg = pg.Surface((WIN_WIDTH, WIN_HEIGHT))
-    ##########################
-    hero = Character.Character()
-    hero.set_pos(100, WIN_HEIGHT / 2)
-    ##########################
-    # entities = pg.sprite.Group()
-    # platforms = []
-    # entities.add(hero)
-    entities = pg.sprite.Group()
-    #entities.add(hero)
+        total_level_width = len(self.map[0]) * BLOCK_WIDTH
+        total_level_height = len(self.map) * BLOCK_HEIGHT
+        self.camera = Camera(total_level_width, total_level_height)
 
-    map = [
-        "##########################",
-        "#--###---###############",
-        "#--###-------############",
-        "#--#########-############",
-        "#--------------##########",
-        "#####-#######--##########",
-        "#####-###################",
-        "####---##################",
-        "#########################"
-    ]
-    clock = pg.time.Clock()
+    def run(self):
+        self.crashed = False
+        while not self.crashed:
+            self.event()
+            self.update()
+            self.render()
 
-    hero.img = pg.image.load('Drawable/1.png')
-    wallimg = pg.image.load('Drawable/wall.png')
-    floorimg = pg.image.load('Drawable/floor.png')
+            # print("pos " + str(self.hero.x) + " " + str(self.hero.y))
 
-    total_level_width = len(map[0]) * BLOCK_WIDTH
-    total_level_height = len(map) * BLOCK_HEIGHT
-    print("full: " + str(total_level_width), " " + str(total_level_height))
-    camera = Camera(total_level_width, total_level_height)
+            pg.display.update()
+            self.clock.tick(30)
 
-    all_sprites = pg.sprite.Group()
-    crashed = False
+        pg.quit()
+        quit()
 
-    step_x = 0
-    step_y = 0
-    speed = 5
-
-    while not crashed:
+    def event(self):
         for event in pg.event.get():
             if event.type == pg.QUIT:
-                crashed = True
+                self.crashed = True
 
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    crashed = True
-                if event.key == pg.K_d:
-                    step_x = speed
-                if event.key == pg.K_a:
-                    step_x = -speed
-                if event.key == pg.K_w:
-                    step_y = -speed
-                if event.key == pg.K_s:
-                    step_y = speed
-
-            if event.type == pg.KEYUP:
-                if event.key == pg.K_d or event.key == pg.K_a or event.key == pg.K_w or event.key == pg.K_s:
-                    step_x = 0
-                    step_y = 0
+                    self.crashed = True
 
             if event.type == pg.MOUSEBUTTONDOWN:
-                pos = pg.mouse.get_pos()
+                mouse_position = pg.mouse.get_pos()
 
-                block_x = int(pos[0]/BLOCK_WIDTH)
-                block_y = int(pos[1]/BLOCK_HEIGHT)
+                block_x = int((mouse_position[0] - self.camera.coefficient_x) / BLOCK_WIDTH)  # Позиция в блоках
+                block_y = int((mouse_position[1] - self.camera.coefficient_y) / BLOCK_HEIGHT)
 
-                pixels_x = block_x * BLOCK_WIDTH
+                pixels_x = block_x * BLOCK_WIDTH  # Позиция в пикселях
                 pixels_y = block_y * BLOCK_HEIGHT
 
+                if self.collision(block_x,block_y):
+                    self.hero.rect = Rect(pixels_x, pixels_y, BLOCK_WIDTH, BLOCK_HEIGHT)
 
+    def collision(self, block_x, block_y):
+        if len(self.map[0]) > block_x >= 0 and len(self.map) > block_y >= 0:
+            if self.map[block_y][block_x] == '-':
+                return True
+        return False
 
-                result = camera.apply(Block(pixels_x, pixels_y))
-                print("mouse " + str(result.x))
+    def update(self):
+        self.camera.update(self.hero)
 
-                #hero.set_pos(pixels_x, pixels_y)
-                #hero.rect = Rect(result.x, result.y, WIN_WIDTH, WIN_HEIGHT)
-                hero.rect = Rect(pixels_x - temp_x, pixels_y - temp_y, BLOCK_WIDTH, BLOCK_HEIGHT)
-        hero.move(step_x, step_y)
+    def render(self):
+        self.display.fill(BACKGROUND_COLOR)
+        self.map_render()
+        self.unit_render()
 
-
-        display.fill(BACKGROUND_COLOR)
-
-        bl = Block(0,0)
-        #print("before" + str(camera.apply(bl).x) + " " + str(camera.apply(bl).y))
-        all_sprites.update()
-        camera.update(hero)
-        #print("after" + str(camera.apply(bl).x) + " " + str(camera.apply(bl).y))
+    def map_render(self):
         x = y = 0
-        for row in map:
+        for row in self.map:
             for col in row:
                 if col == '#':
                     block = Block(x, y)
-                    display.blit(wallimg, camera.apply(block))
+                    self.display.blit(self.walls.img, self.camera.apply(block))
                 if col == '-':
                     block = Block(x, y)
-                    display.blit(floorimg, camera.apply(block))
+                    self.display.blit(self.floor.img, self.camera.apply(block))
                 x += BLOCK_WIDTH
             y += BLOCK_HEIGHT
             x = 0
 
-        print("map " + str(camera.apply(Block(0, 0)).x))
-        temp_x = camera.apply(Block(0, 0)).x
-        temp_y = camera.apply(Block(0, 0)).y
+        self.camera.coefficient_x = self.camera.apply(Block(0, 0)).x  # Отклонения для x,y
+        self.camera.coefficient_y = self.camera.apply(Block(0, 0)).y
 
-        #all_sprites.add(hero)
-        #block = Block(hero.rect.x, hero.rect.y)
-
-        display.blit(hero.img, camera.apply(hero))
+    def unit_render(self):
+        self.display.blit(self.hero.img, self.camera.apply(self.hero))
 
 
-        print("temp x_y " + str(temp_x) + " " + str(temp_y))
-
-
-        pg.display.update()
-        clock.tick(60)
-    pg.quit()
-    quit()
-
-
-if __name__ == "__main__":
-    main()
+game = Game()
+game.new()
+game.run()
