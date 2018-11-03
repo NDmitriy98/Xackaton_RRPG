@@ -2,7 +2,7 @@ from src.Classes.Object import Object
 
 
 class Unit(Object):
-    def __init__(self, hp=10, mp=10, attack=0, protection=0, level=0):
+    def __init__(self, hp=0, mp=0, attack=0, protection=0, level=0):
         super().__init__()
         self.info = "Unit"
         self.hp = hp
@@ -10,6 +10,20 @@ class Unit(Object):
         self.attack = attack
         self.protection = protection
         self.level = level
+        self.alive = True
+
+    def death(self):
+        self.alive = False
+
+    def in_damage(self, incoming_damage):  # Входящий урон
+        clean_damage = incoming_damage / ((10 + self.protection) / 10)
+        self.hp -= clean_damage
+        if self.hp <= 0:
+            self.hp = 0
+            self.death()
+
+    def get_damage(self):
+        return self.attack
 
     def get_hp(self):
         return self.hp
@@ -29,13 +43,8 @@ class Unit(Object):
     def set_attack(self, attack):
         self.attack = attack
 
-    def set_attack(self, attack):
-        self.attack = attack
+    def get_protection(self):
+        return self.protection
 
-    def set_attack(self, protection):
+    def set_protection(self, protection):
         self.protection = protection
-
-    def set_attack(self, protection):
-        self.protection = protection
-
-
