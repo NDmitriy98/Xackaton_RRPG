@@ -1,6 +1,8 @@
 from src.Settings import *
 from src.Camera import Camera
 from src.Classes import *
+from src.Map import Map
+from src.tile_list import *
 
 
 class Game:
@@ -12,14 +14,16 @@ class Game:
 
     def new(self):  # Начало новой игры
         self.hero = Character.Character()
-        self.hero.set_pos(50, 50)
+        self.load_data()
+
+        self.hero.set_pos(40, 60)
         self.walls = Object.Object()
         self.floor = Object.Object()
 
-        self.load_data()
+
 
     def load_data(self):
-        self.map = [
+        """self.map = [
             "##########################",
             "#--###---###############",
             "#--###-------############",
@@ -30,12 +34,17 @@ class Game:
             "####---##################",
             "#########################"]
 
-        self.hero.img = pg.image.load('Drawable/1.png')
-        self.walls.img = pg.image.load('Drawable/wall.png')
-        self.floor.img = pg.image.load('Drawable/floor.png')
 
-        total_level_width = len(self.map[0]) * BLOCK_WIDTH
-        total_level_height = len(self.map) * BLOCK_HEIGHT
+            self.walls.img = pg.image.load('Drawable/wall.png')
+            self.floor.img = pg.image.load('Drawable/floor.png')
+        """
+        self.hero.img = pg.image.load('Drawable/1.png')
+
+        self.map = Map()
+        self.map.generate_map()
+
+        total_level_width = len(self.map.body[0]) * BLOCK_WIDTH
+        total_level_height = len(self.map.body) * BLOCK_HEIGHT
         self.camera = Camera(total_level_width, total_level_height)
 
     def run(self):
@@ -75,10 +84,10 @@ class Game:
                     self.hero.rect = Rect(pixels_x, pixels_y, BLOCK_WIDTH, BLOCK_HEIGHT)
 
     def collision(self, block_x, block_y):
-        if len(self.map[0]) > block_x >= 0 and len(self.map) > block_y >= 0:
-            if self.map[block_y][block_x] == '-':
+        if len(self.map.body[0]) > block_x >= 0 and len(self.map.body) > block_y >= 0:
+            if self.map.body[block_y][block_x] == FLOOR_TILE:
                 return True
-        return False
+        return True
 
     def update(self):
         self.camera.update(self.hero)
@@ -89,18 +98,22 @@ class Game:
         self.unit_render()
 
     def map_render(self):
+        """
         x = y = 0
         for row in self.map:
             for col in row:
-                if col == '#':
+                if col == WALL_TILE:
                     block = Block(x, y)
                     self.display.blit(self.walls.img, self.camera.apply(block))
-                if col == '-':
+                if col == FLOOR_TILE:
                     block = Block(x, y)
                     self.display.blit(self.floor.img, self.camera.apply(block))
                 x += BLOCK_WIDTH
             y += BLOCK_HEIGHT
             x = 0
+        """
+        #self.map.debug_print_map()
+        self.map.print_map(self.display, self.camera)
 
         self.camera.coefficient_x = self.camera.apply(Block(0, 0)).x  # Отклонения для x,y
         self.camera.coefficient_y = self.camera.apply(Block(0, 0)).y
