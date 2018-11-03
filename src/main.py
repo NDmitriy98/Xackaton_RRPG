@@ -33,7 +33,8 @@ def camera_configure(camera, target_rect):
     return Rect(l, t, w, h)
 
 
-
+def cartensian_to_iso(x, y):
+    return x - y, (x + y) / 2
 
 
 def main():
@@ -124,6 +125,7 @@ def main():
 
                 hero.set_pos(pos[0], pos[1])
                 hero.rect = Rect(pos[0], pos[1], WIN_WIDTH, WIN_HEIGHT)
+
         hero.move(step_x, step_y)
 
 
