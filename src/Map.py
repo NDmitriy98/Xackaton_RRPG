@@ -1,12 +1,13 @@
 from src.Point.Point import *
 from src.Tile import *
 from src.tile_list import *
+import src.a_star_path_find as aStar
 import random
 
 MIN_MAP_SIZE = 50
 MAX_MAP_SIZE = 80
 
-MIN_ROOM_SIZE = 5
+MIN_ROOM_SIZE = 7
 MAX_ROOM_SIZE = 12
 
 MAX_ROOMS = 12
@@ -14,11 +15,11 @@ MAX_ROOMS = 12
 
 class Room:
 
-    def __init__(self, x1, y1, x2, y2):
+    def __init__(self, x1, y1, w, h):
         self.x1 = x1
         self.y1 = y1
-        self.x2 = x2
-        self.y2 = y2
+        self.x2 = x1 + w
+        self.y2 = y1 + h
 
     def intersect(self, room):
         return self.x1 <= room.x2 and \
@@ -26,24 +27,41 @@ class Room:
                self.y1 <= room.y2 and \
                self.y2 >= room.y1
 
-    @property
     def center(self):
-        c: Point
-        c.x = (self.x1 + self.x2) / 2
-        c.x = (self.y2 + self.y2) / 2
-        return c
+        _x = (self.x1 + self.x2) // 2
+        _y = (self.y1 + self.y2) // 2
+
+
+        #print('center: {0}, {1}'.format(_x, _y))
+        return _x, _y
 
 
 class Map:
 
     def __init__(self):
-        self.width = random.randint(MIN_MAP_SIZE, MAX_MAP_SIZE - MIN_MAP_SIZE)
-        self.height = random.randint(MIN_MAP_SIZE, MAX_MAP_SIZE - MIN_MAP_SIZE)
+        self.width = random.randint(MIN_MAP_SIZE, MIN_MAP_SIZE + MAX_MAP_SIZE - MIN_MAP_SIZE)
+        self.height = random.randint(MIN_MAP_SIZE, MIN_MAP_SIZE + MAX_MAP_SIZE - MIN_MAP_SIZE)
         self.body = [[Tile(BACK_TILE, False)
-                      for y in range(self.height)]
-                     for x in range(self.width)]
+                      for y in range(self.width)]
+                     for x in range(self.height)]
         self.roomCount = 0
         self.rooms = []
+
+    def get_cell(self, x, y):
+        return self.body[y][x]
+
+    def get_walls(self):
+        walls = []
+        for y in range(self.height):
+            for x in range(self.width):
+                if self.body[y][x].symbol == WALL_TILE:
+                    walls.append((x, y))
+
+        return walls
+
+    def draw_path(self, path, symb):
+        for (x, y) in path:
+            self.body[y][x].symbol = symb
 
     def room_gen(self):
         for i in range(MAX_ROOMS):
@@ -82,11 +100,17 @@ class Map:
             self.body[room.y2][room.x2] = Tile(WALL_TILE, False)
 
     def connect_two_rooms(self, room1, room2):
-        pass
+        finder = aStar.PathFinder(self.body)
+        r1_x, r1_y = room1.center()
+        r2_x, r2_y = room2.center()
+        path = finder.find_path(Point(r1_x, r1_y), Point(r2_x, r2_y))
+        if path:
+            self.draw_path(path, ROAD_TILE)
+
 
     def connect_rooms(self):
         for i in range(0, self.roomCount - 1):
-            self.connectTwoRooms(self.rooms[i], self.rooms[i + 1])
+            self.connect_two_rooms(self.rooms[i], self.rooms[i + 1])
 
     def set_walls(self):
         for room in self.rooms:
@@ -109,6 +133,9 @@ class Map:
                 if self.body[i][room.x2].symbol == ROAD_TILE:
                     continue
                 self.body[i][room.x2].symbol = WALL_TILE
+
+
+
 
     def set_doors(self):
         for room in self.rooms:
@@ -138,11 +165,37 @@ class Map:
 
 
     def set_moreWalls(self):
-        pass
+        pathFinder = aStar.PathFinder(self.body)
+        for y in range(self.height):
+            for x in range(self.width):
+                if self.body[y][x].symbol == ROAD_TILE:
+                    pathFinder.neighbors.clear()
+                    neighbors = pathFinder.find_more_neighbors(x, y)
+                    for neighbor in neighbors:
+                        if self.body[neighbor.y][neighbor.x].symbol == BACK_TILE:
+                            self.body[neighbor.y][neighbor.x].symbol = WALL_TILE
 
     def delete_roads(self):
         for y in range(self.height):
             for x in range(self.width):
-                if self.body[y][x] == ROAD_TILE:
-                    self.body[y][x] = FLOOR_TILE
+                if self.body[y][x].symbol == ROAD_TILE:
+                    self.body[y][x].symbol = FLOOR_TILE
+
+
+    def generate_map(self):
+        self.room_gen()
+        self.set_edges()
+        self.connect_rooms()
+        self.set_walls()
+        self.set_doors()
+        self.set_moreWalls()
+        self.delete_roads()
+
+    def print_map(self):
+        for x, row in enumerate(self.body):
+            print('{:>2}'.format(x), end='')
+            for t in row:
+                t.draw()
+            print()
+
 
