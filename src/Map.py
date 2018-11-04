@@ -4,6 +4,7 @@ from src.tile_list import *
 import src.a_star_path_find as aStar
 from src.Settings import *
 import random
+from copy import copy, deepcopy
 
 MIN_MAP_SIZE = 50
 MAX_MAP_SIZE = 80
