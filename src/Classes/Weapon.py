@@ -7,7 +7,17 @@ class Weapon(Item):
         self.attack = attack
         self.condition = condition
         self.info = "Weapon"
+        self.class_name = "Weapon"
+        self.description = "Урон = " + str(self.attack)
+
+    def set_attack(self, attack):
+        self.attack = attack
+        self.description = "Урон = " + str(self.attack)
 
     def get_attack(self):
         return self.attack
+
+    def use(self = None):
+        #print("Used weapon")
+        return self
 
