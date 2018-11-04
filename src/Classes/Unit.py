@@ -22,9 +22,6 @@ class Unit(Object):
             self.hp = 0
             self.death()
 
-    def get_damage(self):
-        return self.attack
-
     def get_hp(self):
         return self.hp
 

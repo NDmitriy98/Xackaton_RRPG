@@ -15,6 +15,7 @@ MAX_ENEMY_IN_ROOM = 3
 
 
 class Game:
+
     def __init__(self):
         pg.init()
         self.display = pg.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
@@ -102,9 +103,6 @@ class Game:
             self.update()
             self.render()
 
-            self.hero.inventory.render_inventory()
-            # print("pos " + str(self.hero.x) + " " + str(self.hero.y))
-
             pg.display.update()
             self.clock.tick(30)
 
@@ -165,6 +163,43 @@ class Game:
         self.display.fill(BACKGROUND_COLOR)
         self.map_render()
         self.unit_render()
+        self.inventory_render()
+
+    def inventory_render(self):
+        if self.hero.inventory.opened:
+            self.display.blit(self.hero.inventory.background, (20, 50))
+            self.display.blit(self.hero.inventory.info_background, (600, 50))
+            text = self.hero.inventory.font.render(str(self.hero.get_attack())[0:17], True, (200, 220, 180))
+
+            self.display.blit(text, [650, 400])
+            i = j = 0
+            if self.hero.inventory:
+                for item in self.hero.inventory.item_list:
+                    self.display.blit(item.img, (50 + i * 50, 65 + j * 50))
+                    i += 1
+                    if i == 4:
+                        j += 1
+                        i = 0
+            if self.hero.inventory.item_info:
+                self.display.blit(self.hero.inventory.item_background,(self.hero.inventory.item_x, self.hero.inventory.item_y))
+                self.display.blit(self.hero.inventory.item_list[self.hero.inventory.item_num].img,
+                                  (self.hero.inventory.item_x + 10, self.hero.inventory.item_y + 23, 40, 40))
+
+                text = self.hero.inventory.font.render(self.hero.inventory.item_list
+                                                       [self.hero.inventory.item_num].info[0:17], True, (200, 220, 180))
+                text_dis = self.hero.inventory.font_small.render(self.hero.inventory.item_list
+                                                                 [self.hero.inventory.item_num].description[0:17], True, (200, 220, 180))
+                text_cost = self.hero.inventory.font.render(str(self.hero.inventory.item_list
+                                                                [self.hero.inventory.item_num].cost)[0:5], True, (200, 220, 180))
+
+                self.display.blit(text, [self.hero.inventory.item_x + 70, self.hero.inventory.item_y + 40])
+                self.display.blit(text_dis, [self.hero.inventory.item_x + 70, self.hero.inventory.item_y + 85])
+                self.display.blit(text_cost, [self.hero.inventory.item_x + 160, self.hero.inventory.item_y + 120])
+
+            if self.hero.inventory.weapon:
+                self.display.blit(self.hero.inventory.weapon.img, (70, 385))
+            if self.hero.inventory.armor:
+                self.display.blit(self.hero.inventory.armor.img, (180, 385))
 
     def map_render(self):
 

@@ -2,8 +2,8 @@ import pygame as pg
 from pygame.rect import Rect
 
 
-WIN_WIDTH = 800
-WIN_HEIGHT = 600
+WIN_WIDTH = 1024
+WIN_HEIGHT = 680
 DISPLAY = (WIN_WIDTH, WIN_HEIGHT)
 
 BACKGROUND_COLOR = (0, 255, 255)
