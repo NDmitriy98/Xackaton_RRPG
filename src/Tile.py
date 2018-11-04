@@ -1,6 +1,8 @@
 from src.tile_list import *
 import src.tile_list as tl
 from src.Settings import *
+
+
 class Tile:
 
     def __init__(self, symbol, visible):
@@ -9,11 +11,12 @@ class Tile:
         self.visible = visible
         self.explored = False
 
-    def draw(self,x, y, display, camera):
+    def draw(self, x, y, display, camera):
         self.image = self.symbol
         img = pg.image.load(self.image)
-        block = Block(x, y)
-        display.blit(img, camera.apply(block))
+        result = camera.apply(Block(x, y))
+        if self.check_coords(result.x, result.y):
+            display.blit(img, (result.x, result.y))
 
     def debug_draw(self):
         s = ''
@@ -29,4 +32,8 @@ class Tile:
             s = 'D'
         print(s, end='')
 
-
+    def check_coords(self, x, y):
+        if WIN_WIDTH > x > -BLOCK_WIDTH:
+            if WIN_HEIGHT > y > -BLOCK_HEIGHT:
+                return True
+        return False

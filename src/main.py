@@ -99,7 +99,7 @@ class Game:
         if len(self.map.body[0]) > block_x >= 0 and len(self.map.body) > block_y >= 0:
             if self.map.body[block_y][block_x] == FLOOR_TILE:
                 return True
-        return False
+        return True
 
     def update(self):
         self.camera.update(self.hero)
