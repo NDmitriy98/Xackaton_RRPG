@@ -18,7 +18,10 @@ class Inventory:
         self.item_x = 0
         self.item_y = 0
         self.font = pygame.font.Font(None, 26)
+        self.font_default = pygame.font.Font(None, 34)
         self.font_small = pygame.font.Font(None, 22)
+        self.font_big = pygame.font.Font(None, 42)
+        self.font_ultra_big = pygame.font.Font(None, 64)
 
     def add_item(self, item: Item):
         if len(self.item_list) != 24:

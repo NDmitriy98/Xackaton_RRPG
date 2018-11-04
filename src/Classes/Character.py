@@ -11,7 +11,8 @@ class Character(Unit):
         self.info = "Character"
         self.inventory: Inventory = inventory
         self.experience = experience
-        self.hp = 10
+        self.hp = 20
+        self.mp = 10
         self.level = 1
         self.attack = 1
         self.protection = 1
@@ -32,15 +33,18 @@ class Character(Unit):
         self.attack += 1
         self.protection += 1
         self.hp += 10
-
-        self.full_attack += 1
-        self.full_protection += 1
+        self.mp += 10
 
     def add_experience(self, dp_exp):  # Получение опыта
         self.experience += dp_exp
         while self.experience > (self.level * 10):
             self.experience -= (self.level * 10)
             self.level_up()
+
+    def get_max_hp(self):
+        return 10 + self.level * 10
+    def get_max_mp(self):
+        return self.level * 10
 
     def get_attack(self):
         if self.inventory.weapon:
@@ -53,6 +57,17 @@ class Character(Unit):
             return self.protection + self.inventory.armor.protection
         else:
             return self.protection
+
+    def in_damage(self, incoming_damage):  # Входящий урон
+        if self.inventory.armor:
+            clean_damage = incoming_damage / ((10 + self.protection + self.inventory.armor.protection) / 10)
+        else:
+            clean_damage = incoming_damage / ((10 + self.protection ) / 10)
+        self.hp -= clean_damage
+        if self.hp <= 0:
+            self.hp = 0
+            self.death()
+
 
     def set_weapon(self, weapon: Weapon.Weapon):
         self.inventory.weapon = weapon
