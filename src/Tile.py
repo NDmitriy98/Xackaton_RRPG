@@ -16,18 +16,7 @@ class Tile:
             display.blit(self.image, (result.x, result.y))
 
     def debug_draw(self):
-        s = ''
-        if self.symbol == tl.FLOOR_TILE:
-            s = '-'
-        elif self.symbol == tl.WALL_TILE:
-            s = '#'
-        elif self.symbol == tl.ROAD_TILE:
-            s = 'R'
-        elif self.symbol == tl.BACK_TILE:
-            s = ' '
-        elif self.symbol == tl.DOOR_TILE:
-            s = 'D'
-        print(s, end='')
+        print(self.symbol, end='')
 
     def check_coords(self, x, y):
         if WIN_WIDTH > x > -BLOCK_WIDTH:
