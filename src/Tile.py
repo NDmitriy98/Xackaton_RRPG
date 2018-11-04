@@ -11,8 +11,9 @@ class Tile:
 
     def draw(self,x, y, display, camera, images):
         self.image = images[self.symbol]
-        block = Block(x, y)
-        display.blit(self.image, camera.apply(block))
+        result = camera.apply(Block(x, y))
+        if self.check_coords(result.x, result.y):
+            display.blit(self.image, (result.x, result.y))
 
     def debug_draw(self):
         s = ''
@@ -28,4 +29,8 @@ class Tile:
             s = 'D'
         print(s, end='')
 
-
+    def check_coords(self, x, y):
+        if WIN_WIDTH > x > -BLOCK_WIDTH:
+            if WIN_HEIGHT > y > -BLOCK_HEIGHT:
+                return True
+        return False
