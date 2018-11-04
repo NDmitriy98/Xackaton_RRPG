@@ -3,3 +3,10 @@ class Item:
         self.cost = cost
         self.weight = weight
         self.info = "Item"
+        self.description = "None"
+        self.class_name = "Item"
+        self.use()
+
+    def use(self):
+        print("Used")
+

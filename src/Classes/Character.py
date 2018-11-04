@@ -1,30 +1,28 @@
 from pygame.rect import Rect
 
-from src.Classes import Item, Armor, Weapon
+from src.Classes import Item, Armor, Weapon, Inventory
 from src.Classes.Unit import Unit
 
 
 class Character(Unit):
-    def __init__(self, experience=0, weapon: Weapon.Weapon = None, armor: Armor.Armor = None, inventory = None):
+    def __init__(self, experience=0, inventory = None):
         super().__init__()
 
         self.info = "Character"
-        self.weapon = weapon
-        self.armor = armor
-        self.inventory = inventory
+        self.inventory: Inventory = inventory
         self.experience = experience
         self.hp = 10
         self.level = 1
+        if inventory:
+            if inventory.weapon:
+                self.full_attack = self.attack + inventory.weapon.get_attack()  # Атака с учётом снаряжения
+            else:
+                self.full_attack = self.attack
 
-        if weapon:
-            self.full_attack = self.attack + weapon.get_attack()  # Атака с учётом снаряжения
-        else:
-            self.full_attack = self.attack
-
-        if armor:
-            self.full_protection = self.protection + armor.get_protection()
-        else:
-            self.full_protection = self.protection
+            if inventory.armor:
+                self.full_protection = self.protection + inventory.armor.get_protection()
+            else:
+                self.full_protection = self.protection
 
     def level_up(self):
         self.level += 1
@@ -45,5 +43,9 @@ class Character(Unit):
         return self.full_attack
 
     def set_weapon(self, weapon: Weapon.Weapon):
-        self.weapon = weapon
+        self.inventory.weapon = weapon
         self.full_attack = self.attack + weapon.attack
+
+    def set_armor(self, armor: Armor.Armor):
+        self.inventory.armor = armor
+        self.full_protection = self.protection + armor.protection
