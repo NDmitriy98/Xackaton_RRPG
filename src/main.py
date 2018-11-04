@@ -3,6 +3,7 @@ from src.Camera import Camera
 from src.Classes import *
 from src.Map import Map
 from src.tile_list import *
+from src.drawable_dict import *
 
 
 class Game:
@@ -11,12 +12,12 @@ class Game:
         self.display = pg.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
         pg.display.set_caption('RRPG ' + GAME_VERSION)
         self.clock = pg.time.Clock()
+        self.images = {}
 
     def new(self):  # Начало новой игры
         self.hero = Character.Character()
 
 
-        self.hero.set_pos(40, 60)
         self.inventory = Inventory.Inventory(self.display, self.hero)
         self.hero.inventory = self.inventory
 
@@ -32,23 +33,17 @@ class Game:
         self.floor = Object.Object()
 
         self.load_data()
+        (s_x, s_y) = self.map.rooms[0].center()
+        self.hero.set_pos(s_x, s_y)
+
+    def load_images(self):
+        self.images = {}
+        for drw in drawable.items():
+            self.images[drw[0]] = pg.image.load(drw[1])
+
 
     def load_data(self):
-        """self.map = [
-            "##########################",
-            "#--###---###############",
-            "#--###-------############",
-            "#--#########-############",
-            "#--------------##########",
-            "#####-#######--##########",
-            "#####-###################",
-            "####---##################",
-            "#########################"]
-
-
-            self.walls.img = pg.image.load('Drawable/wall.png')
-            self.floor.img = pg.image.load('Drawable/floor.png')
-        """
+        self.load_images()
         self.hero.img = pg.image.load('Drawable/1.png')
 
         self.map = Map()
@@ -69,7 +64,7 @@ class Game:
             # print("pos " + str(self.hero.x) + " " + str(self.hero.y))
 
             pg.display.update()
-            self.clock.tick(30)
+            self.clock.tick(20)
 
         pg.quit()
         quit()
@@ -99,7 +94,7 @@ class Game:
         if len(self.map.body[0]) > block_x >= 0 and len(self.map.body) > block_y >= 0:
             if self.map.body[block_y][block_x] == FLOOR_TILE:
                 return True
-        return False
+        return True
 
     def update(self):
         self.camera.update(self.hero)
@@ -125,7 +120,7 @@ class Game:
             x = 0
         """
         #self.map.debug_print_map()
-        self.map.print_map(self.display, self.camera)
+        self.map.print_map(self.display, self.camera, self.images)
 
         self.camera.coefficient_x = self.camera.apply(Block(0, 0)).x  # Отклонения для x,y
         self.camera.coefficient_y = self.camera.apply(Block(0, 0)).y

@@ -1,0 +1,8 @@
+from src.tile_list import *
+
+drawable = {
+    FLOOR_TILE : 'Drawable/floor.png',
+    WALL_TILE : 'Drawable/wall.png',
+    BACK_TILE : 'Drawable/back.png',
+    DOOR_TILE : 'Drawable/door.png'
+}

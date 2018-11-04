@@ -9,11 +9,10 @@ class Tile:
         self.visible = visible
         self.explored = False
 
-    def draw(self,x, y, display, camera):
-        self.image = self.symbol
-        img = pg.image.load(self.image)
+    def draw(self,x, y, display, camera, images):
+        self.image = images[self.symbol]
         block = Block(x, y)
-        display.blit(img, camera.apply(block))
+        display.blit(self.image, camera.apply(block))
 
     def debug_draw(self):
         s = ''

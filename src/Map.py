@@ -192,11 +192,11 @@ class Map:
         self.set_moreWalls()
         self.delete_roads()
 
-    def print_map(self, display, camera):
+    def print_map(self, display, camera, images):
         x = y = 0
         for row in self.body:
             for t in row:
-                t.draw(x, y, display, camera)
+                t.draw(x, y, display, camera, images)
                 x += BLOCK_WIDTH
             y += BLOCK_HEIGHT
             x = 0
