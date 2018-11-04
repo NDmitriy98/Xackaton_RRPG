@@ -1,5 +1,6 @@
 import random
 
+from src import pyganim
 from src.Settings import *
 from src.Camera import Camera
 from src.Classes import *
@@ -27,6 +28,8 @@ class Game:
         self.hero = Character.Character()
         self.inventory = Inventory.Inventory()
         self.enemies = []
+        self.step = False
+        self.iterations = 0
 
     def new(self):  # Начало новой игры
 
@@ -126,8 +129,44 @@ class Game:
             pixels_x = block_x * BLOCK_WIDTH  # Позиция в пикселях
             pixels_y = block_y * BLOCK_HEIGHT
 
-            if self.collision(block_x, block_y):
-                self.hero.rect = Rect(pixels_x, pixels_y, BLOCK_WIDTH, BLOCK_HEIGHT)
+            if self.check_npc(block_x, block_y):
+                for enemy in self.enemies:
+                    if enemy.x == block_x and enemy.y == block_y:
+                        print("punch")
+                        damage = self.hero.get_attack()
+                        enemy.in_damage(damage)
+                        #self.print_damage(block_x, block_y, damage)
+                        if not enemy.alive:
+                            self.enemies.remove(enemy)
+            else:
+                if self.collision(block_x, block_y):
+                    self.hero.animMoveUp.blit(self.display, self.camera.apply(self.hero))
+
+                    def falseStay():
+                        self.hero.stay = False
+                        self.hero.stay_up = False
+                        self.hero.stay_down = False
+                        self.hero.stay_right = False
+                        self.hero.stay_left = False
+
+                    if self.hero.get_y() - pixels_y == 50 and self.hero.get_x() == pixels_x:
+                        ############UP MOVE
+                        self.hero.up = True
+                        falseStay()
+                    if self.hero.get_y() - pixels_y == -50 and self.hero.get_x() == pixels_x:
+                        ############DOWN MOVE
+                        self.hero.down = True
+                        falseStay()
+                    if self.hero.get_y() == pixels_y and self.hero.get_x() - pixels_x == -50:
+                        ############RIGHT MOVE
+                        self.hero.right = True
+                        falseStay()
+                    if self.hero.get_y() == pixels_y and self.hero.get_x() - pixels_x == 50:
+                        ############LEFT MOVE
+                        self.hero.left = True
+                        falseStay()
+
+
 
     def event_keys(self, event):
         if event.type == pg.QUIT:
@@ -142,6 +181,12 @@ class Game:
                     self.hero.inventory.opened = True
             if event.key == pg.K_e:
                 self.hero.add_experience(3)
+
+    def check_npc(self, block_x, block_y):
+        if len(self.game_state.body[0]) > block_x >= 0 and len(self.game_state.body) > block_y >= 0:
+            if self.game_state.body[block_y][block_x].symbol == SKELETON_TILE:
+                return True
+        return False
 
     def collision(self, block_x, block_y):
         if len(self.map.body[0]) > block_x >= 0 and len(self.map.body) > block_y >= 0:
@@ -163,8 +208,65 @@ class Game:
         self.display.fill(BACKGROUND_COLOR)
         self.map_render()
         self.unit_render()
+        self.character_render()
         self.hud_render()
         self.inventory_render()
+
+    def character_render(self):
+        if self.hero.up and self.iterations < (BLOCK_HEIGHT/SPEED):
+            self.hero.rect = Rect(self.hero.rect.x, self.hero.rect.y-SPEED, BLOCK_WIDTH, BLOCK_HEIGHT)
+            self.hero.animMoveUp.blit(self.display, self.camera.apply(self.hero))
+            self.iterations += 1
+            if self.iterations >= (BLOCK_HEIGHT/SPEED):
+                self.hero.up = False
+                self.hero.stay = True
+                self.hero.stay_up = True
+                self.iterations = 0
+
+        if self.hero.down and self.iterations < (BLOCK_HEIGHT/SPEED):
+            self.hero.rect = Rect(self.hero.rect.x, self.hero.rect.y+SPEED, BLOCK_WIDTH, BLOCK_HEIGHT)
+            self.hero.animMoveDown.blit(self.display, self.camera.apply(self.hero))
+            self.iterations += 1
+            if self.iterations >= (BLOCK_HEIGHT/SPEED):
+                self.hero.down = False
+                self.hero.stay = True
+                self.hero.stay_down = True
+                self.iterations = 0
+
+        if self.hero.right and self.iterations < (BLOCK_HEIGHT/SPEED):
+            self.hero.rect = Rect(self.hero.rect.x + SPEED, self.hero.rect.y, BLOCK_WIDTH, BLOCK_HEIGHT)
+            self.hero.animMoveRight.blit(self.display, self.camera.apply(self.hero))
+            self.iterations += 1
+            if self.iterations >= (BLOCK_HEIGHT/SPEED):
+                self.hero.right = False
+                self.hero.stay = True
+                self.hero.stay_right = True
+                self.iterations = 0
+
+        if self.hero.left and self.iterations < (BLOCK_HEIGHT/SPEED):
+            self.hero.rect = Rect(self.hero.rect.x - SPEED, self.hero.rect.y, BLOCK_WIDTH, BLOCK_HEIGHT)
+            self.hero.animMoveLeft.blit(self.display, self.camera.apply(self.hero))
+            self.iterations += 1
+            if self.iterations >= (BLOCK_HEIGHT/SPEED):
+                self.hero.left = False
+                self.hero.stay = True
+                self.hero.stay_left = True
+                self.iterations = 0
+
+
+        if self.hero.stay:
+            if self.hero.stay_up:
+                self.hero.animStayUp.blit(self.display, self.camera.apply(self.hero))
+            if self.hero.stay_down:
+                self.hero.animStayDown.blit(self.display, self.camera.apply(self.hero))
+            if self.hero.stay_right:
+                self.hero.animStayRight.blit(self.display, self.camera.apply(self.hero))
+            if self.hero.stay_left:
+                self.hero.animStayLeft.blit(self.display, self.camera.apply(self.hero))
+
+
+
+
 
     def inventory_render(self):
         if self.hero.inventory.opened:
@@ -249,7 +351,7 @@ class Game:
         self.camera.coefficient_y = self.camera.apply(Block(0, 0)).y
 
     def unit_render(self):
-        self.display.blit(self.hero.img, self.camera.apply(self.hero))
+        #self.display.blit(self.hero.img, self.camera.apply(self.hero))
         for enemy in self.enemies:
             enemy.tile.draw(enemy.x * BLOCK_WIDTH, enemy.y * BLOCK_HEIGHT, self.display, self.camera, self.images)
 
