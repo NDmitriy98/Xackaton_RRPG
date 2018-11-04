@@ -1,4 +1,5 @@
 from src.Classes.Enemy import Enemy
+from src.Tile import *
 
 
 class Skeleton(Enemy):
@@ -9,6 +10,7 @@ class Skeleton(Enemy):
         self.protection = 1
         self.hp = 10
         self.info = "Skeleton"
+        self.tile = Tile(SKELETON_TILE, True)
 
 
 
