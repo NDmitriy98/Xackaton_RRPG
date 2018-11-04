@@ -43,10 +43,16 @@ class Character(Unit):
             self.level_up()
 
     def get_attack(self):
-        return self.attack + self.inventory.weapon.attack
+        if self.inventory.weapon:
+            return self.attack + self.inventory.weapon.attack
+        else:
+            return self.attack
 
     def get_protection(self):
-        return self.protection + self.inventory.armor.protection
+        if self.inventory.armor:
+            return self.protection + self.inventory.armor.protection
+        else:
+            return self.protection
 
     def set_weapon(self, weapon: Weapon.Weapon):
         self.inventory.weapon = weapon

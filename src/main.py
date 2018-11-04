@@ -1,4 +1,5 @@
 import random
+
 from src.Settings import *
 from src.Camera import Camera
 from src.Classes import *
@@ -25,7 +26,7 @@ class Game:
         self.map = Map()
         self.game_state : Map
         self.hero = Character.Character()
-        self.inventory = Inventory.Inventory(self.display, self.hero)
+        self.inventory = Inventory.Inventory()
         self.enemies = []
 
     def new(self):  # Начало новой игры
@@ -204,7 +205,6 @@ class Game:
     def map_render(self):
 
         #self.map.debug_print_map()
-        # self.game_state.print_map(self.display, self.camera, self.images)
         self.map.print_map(self.display, self.camera, self.images)
 
         self.camera.coefficient_x = self.camera.apply(Block(0, 0)).x  # Отклонения для x,y

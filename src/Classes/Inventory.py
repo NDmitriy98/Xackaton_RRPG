@@ -5,7 +5,7 @@ from src.Classes.Item import Item
 
 
 class Inventory:
-    def __init__(self, display, character):
+    def __init__(self):
         self.item_list = []
         self.weapon: Weapon = None
         self.armor: Armor = None
@@ -13,8 +13,6 @@ class Inventory:
         self.info_background = pygame.image.load('Drawable/info.png')
         self.item_background = pygame.image.load('Drawable/item_background.png')
         self.opened = False
-        self.display = display
-        self.character = character
         self.item_info = False
         self.item_num = None
         self.item_x = 0
@@ -25,7 +23,6 @@ class Inventory:
     def add_item(self, item: Item):
         if len(self.item_list) != 24:
             self.item_list.append(item)
-
 
     def inventory_event(self, event):
             if event.type == pygame.MOUSEBUTTONDOWN:
