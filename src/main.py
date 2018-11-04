@@ -1,3 +1,4 @@
+import random
 from src.Settings import *
 from src.Camera import Camera
 from src.Classes import *
@@ -5,6 +6,12 @@ from src.Map import Map
 from src.tile_list import *
 from src.drawable_dict import *
 from src.Isometric.convert import *
+from copy import copy, deepcopy
+
+
+MIN_ENEMY_COUNT = 6
+MAX_ENEMY_COUNT = 16
+MAX_ENEMY_IN_ROOM = 3
 
 
 class Game:
@@ -14,12 +21,14 @@ class Game:
         pg.display.set_caption('RRPG ' + GAME_VERSION)
         self.clock = pg.time.Clock()
         self.images = {}
+        self.map = Map()
+        self.game_state : Map
+        self.hero = Character.Character()
+        self.inventory = Inventory.Inventory(self.display, self.hero)
+        self.enemies = []
 
     def new(self):  # Начало новой игры
-        self.hero = Character.Character()
 
-
-        self.inventory = Inventory.Inventory(self.display, self.hero)
         self.hero.inventory = self.inventory
 
         weapon = Weapon.Weapon()
@@ -59,12 +68,16 @@ class Game:
         self.hero.inventory.add_item(heal_poition)
         self.hero.inventory.add_item(heal_poition)
         self.hero.inventory.add_item(heal_poition)
-        self.walls = Object.Object()
-        self.floor = Object.Object()
+        #self.walls = Object.Object()
+        #self.floor = Object.Object()
 
         self.load_data()
+        self.map.debug_print_map()
         (s_x, s_y) = self.map.rooms[0].center()
         self.hero.set_pos(s_x*BLOCK_WIDTH, s_y*BLOCK_HEIGHT)
+
+        self.set_enemies()
+        self.game_state.debug_print_map()
 
     def load_images(self):
         self.images = {}
@@ -75,8 +88,8 @@ class Game:
         self.load_images()
         self.hero.img = pg.image.load('Drawable/1.png')
 
-        self.map = Map()
         self.map.generate_map()
+        self.game_state = deepcopy(self.map)
 
         total_level_width = len(self.map.body[0]) * BLOCK_WIDTH
         total_level_height = len(self.map.body) * BLOCK_HEIGHT
@@ -156,6 +169,7 @@ class Game:
     def map_render(self):
 
         #self.map.debug_print_map()
+        # self.game_state.print_map(self.display, self.camera, self.images)
         self.map.print_map(self.display, self.camera, self.images)
 
         self.camera.coefficient_x = self.camera.apply(Block(0, 0)).x  # Отклонения для x,y
@@ -163,6 +177,36 @@ class Game:
 
     def unit_render(self):
         self.display.blit(self.hero.img, self.camera.apply(self.hero))
+        for enemy in self.enemies:
+            enemy.tile.draw(enemy.x*BLOCK_WIDTH, enemy.y*BLOCK_HEIGHT, self.display, self.camera, self.images)
+
+    def set_enemies(self):
+        enemy_count = random.randint(MIN_ENEMY_COUNT, MAX_ENEMY_COUNT)
+
+        for room in self.map.rooms[1:]:
+            if enemy_count == 0:
+                break
+            else:
+                in_room = random.randint(0, MAX_ENEMY_IN_ROOM)
+                for i in range(in_room):
+                    enemy = Skeleton.Skeleton()
+                    pos_x = random.randint(room.x1, room.x2)
+                    pos_y = random.randint(room.y1, room.y2)
+                    while self.map.body[pos_y][pos_x].symbol != FLOOR_TILE and \
+                            self.game_state.body[pos_y][pos_x].symbol != FLOOR_TILE:
+                        pos_x = random.randint(room.x1, room.x2)
+                        pos_y = random.randint(room.y1, room.y2)
+
+                    enemy.set_pos(pos_x, pos_y)
+                    enemy_count -= 1
+                    self.enemies.append(enemy)
+                    self.game_state.body[pos_y][pos_x].symbol = SKELETON_TILE
+
+
+
+
+
+
 
 
 game = Game()
