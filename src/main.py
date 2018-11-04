@@ -4,6 +4,7 @@ from src.Classes import *
 from src.Map import Map
 from src.tile_list import *
 from src.drawable_dict import *
+from src.Isometric.convert import *
 
 
 class Game:
@@ -34,7 +35,10 @@ class Game:
 
         self.load_data()
         (s_x, s_y) = self.map.rooms[0].center()
-        self.hero.set_pos(s_x, s_y)
+        (s_x, s_y) = cart_to_iso(s_x, s_y)
+        self.hero.set_pos(s_x*BLOCK_WIDTH//2, s_y*BLOCK_HEIGHT//2)
+        #(s_x, s_y) = cart_to_iso(s_x* BLOCK_WIDTH, s_y* BLOCK_HEIGHT)
+        #self.hero.set_pos(s_x, s_y)
 
     def load_images(self):
         self.images = {}
@@ -92,9 +96,16 @@ class Game:
 
     def collision(self, block_x, block_y):
         if len(self.map.body[0]) > block_x >= 0 and len(self.map.body) > block_y >= 0:
-            if self.map.body[block_y][block_x] == FLOOR_TILE:
+            if self.map.body[block_y][block_x].symbol != WALL_TILE and \
+                    self.map.body[block_y][block_x].symbol != BACK_TILE:
+
+                if self.map.body[block_y][block_x].symbol == DOOR_TILE:
+                    self.map.body[block_y][block_x].symbol = OPEN_DOOR_TILE
+                elif self.map.body[block_y][block_x].symbol == OPEN_DOOR_TILE:
+                    self.map.body[block_y][block_x].symbol = DOOR_TILE
+
                 return True
-        return True
+        return False
 
     def update(self):
         self.camera.update(self.hero)
@@ -105,25 +116,14 @@ class Game:
         self.unit_render()
 
     def map_render(self):
-        """
-        x = y = 0
-        for row in self.map:
-            for col in row:
-                if col == WALL_TILE:
-                    block = Block(x, y)
-                    self.display.blit(self.walls.img, self.camera.apply(block))
-                if col == FLOOR_TILE:
-                    block = Block(x, y)
-                    self.display.blit(self.floor.img, self.camera.apply(block))
-                x += BLOCK_WIDTH
-            y += BLOCK_HEIGHT
-            x = 0
-        """
+
         #self.map.debug_print_map()
         self.map.print_map(self.display, self.camera, self.images)
 
-        self.camera.coefficient_x = self.camera.apply(Block(0, 0)).x  # Отклонения для x,y
-        self.camera.coefficient_y = self.camera.apply(Block(0, 0)).y
+        #self.camera.coefficient_x = self.camera.apply(Block(0, 0)).x  # Отклонения для x,y
+        #self.camera.coefficient_y = self.camera.apply(Block(0, 0)).y
+
+        (self.camera.coefficient_x, self.camera.coefficient_y) = cart_to_iso(self.camera.apply(Block(0, 0)).x, self.camera.apply(Block(0, 0)).y)
 
     def unit_render(self):
         self.display.blit(self.hero.img, self.camera.apply(self.hero))
