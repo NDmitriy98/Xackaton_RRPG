@@ -100,18 +100,14 @@ class Game:
 
     def event(self):
         for event in pg.event.get():
-            self.move_event(event)
-            self.hero.inventory.inventory_event(event)
+            self.event_keys(event)
+            if self.hero.inventory.opened:
+                self.hero.inventory.inventory_event(event)
+            else:
+                self.move_event(event)
 
 
     def move_event(self, event):
-        if event.type == pg.QUIT:
-            self.crashed = True
-
-        if event.type == pg.KEYDOWN:
-            if event.key == pg.K_ESCAPE:
-                self.crashed = True
-
         if event.type == pg.MOUSEBUTTONDOWN:
             mouse_position = pg.mouse.get_pos()
 
@@ -123,6 +119,18 @@ class Game:
 
             if self.collision(block_x, block_y):
                 self.hero.rect = Rect(pixels_x, pixels_y, BLOCK_WIDTH, BLOCK_HEIGHT)
+
+    def event_keys(self, event):
+        if event.type == pg.QUIT:
+            self.crashed = True
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_ESCAPE:
+                self.crashed = True
+            if event.key == pg.K_i:
+                if self.hero.inventory.opened:
+                    self.hero.inventory.opened = False
+                else:
+                    self.hero.inventory.opened = True
 
     def collision(self, block_x, block_y):
         if len(self.map.body[0]) > block_x >= 0 and len(self.map.body) > block_y >= 0:

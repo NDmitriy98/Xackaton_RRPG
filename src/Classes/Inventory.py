@@ -11,6 +11,7 @@ class Inventory:
         self.armor: Armor = None
         self.background = pygame.image.load('Drawable/inventory.png')
         self.item_background = pygame.image.load('Drawable/item_background.png')
+        self.opened = False
         self.display = display
         self.character = character
         self.item_info = False
@@ -26,31 +27,32 @@ class Inventory:
 
 
     def render_inventory(self):
-        self.display.blit(self.background, (20, 50))
-        i = j = 0
-        if self.character.inventory:
-            for item in self.item_list:
-                self.display.blit(item.img, (50 + i * 50, 65 + j * 50))
-                i += 1
-                if i == 4:
-                    j += 1
-                    i = 0
-        if self.item_info:
-            self.display.blit(self.item_background,(self.item_x, self.item_y))
-            self.display.blit(self.item_list[self.item_num].img, (self.item_x + 10, self.item_y + 23, 40, 40))
+        if self.opened:
+            self.display.blit(self.background, (20, 50))
+            i = j = 0
+            if self.character.inventory:
+                for item in self.item_list:
+                    self.display.blit(item.img, (50 + i * 50, 65 + j * 50))
+                    i += 1
+                    if i == 4:
+                        j += 1
+                        i = 0
+            if self.item_info:
+                self.display.blit(self.item_background,(self.item_x, self.item_y))
+                self.display.blit(self.item_list[self.item_num].img, (self.item_x + 10, self.item_y + 23, 40, 40))
 
-            text = self.font.render(self.item_list[self.item_num].info[0:17], True, (200, 220, 180))
-            text_dis = self.font_small.render(self.item_list[self.item_num].description[0:17], True, (200, 220, 180))
-            text_cost = self.font.render(str(self.item_list[self.item_num].cost)[0:5], True, (200, 220, 180))
+                text = self.font.render(self.item_list[self.item_num].info[0:17], True, (200, 220, 180))
+                text_dis = self.font_small.render(self.item_list[self.item_num].description[0:17], True, (200, 220, 180))
+                text_cost = self.font.render(str(self.item_list[self.item_num].cost)[0:5], True, (200, 220, 180))
 
-            self.display.blit(text, [self.item_x + 70, self.item_y + 40])
-            self.display.blit(text_dis, [self.item_x + 70, self.item_y + 85])
-            self.display.blit(text_cost, [self.item_x + 160, self.item_y + 120])
+                self.display.blit(text, [self.item_x + 70, self.item_y + 40])
+                self.display.blit(text_dis, [self.item_x + 70, self.item_y + 85])
+                self.display.blit(text_cost, [self.item_x + 160, self.item_y + 120])
 
-        if self.weapon:
-            self.display.blit(self.weapon.img, (70, 385))
-        if self.armor:
-            self.display.blit(self.armor.img, (180, 385))
+            if self.weapon:
+                self.display.blit(self.weapon.img, (70, 385))
+            if self.armor:
+                self.display.blit(self.armor.img, (180, 385))
 
 
     def inventory_event(self, event):

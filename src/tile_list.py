@@ -1,4 +1,4 @@
-FLOOR_TILE = 'Drawable/dirt_N.png'
+FLOOR_TILE = 'Drawable/floor.png'
 WALL_TILE = 'Drawable/wall.png'
 ROAD_TILE = 'R'
 BACK_TILE = 'Drawable/back.png'
