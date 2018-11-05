@@ -186,8 +186,8 @@ class Game:
 
             else:
                 if self.collision(block_x, block_y):
-                    #self.hero.init_path_finder(self.game_state)
-                    #self.hero.build_path()
+                    self.hero.init_path_finder(self.game_state)
+                    self.hero.build_path(block_x, block_y)
                     if self.hero.get_rect_y() - pixels_y == 50 and self.hero.get_rect_x() == pixels_x:
                         ############UP MOVE
                         self.hero.up = True
