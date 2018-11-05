@@ -251,101 +251,103 @@ class Game:
 
 
     def unit_render(self, unit):
-        if unit.up and self.iterations < (BLOCK_HEIGHT / SPEED):
-            unit.move_rect(0, -SPEED)
-            unit.animMoveUp.blit(self.display, self.camera.apply(unit))
-            self.iterations += 1
-            if self.iterations >= (BLOCK_HEIGHT / SPEED):
-                unit.up = False
-                unit.stay = True
-                unit.stay_up = True
-                self.iterations = 0
-                unit.move(0, -1)
+        in_display = self.camera.apply(unit)
+        if WIN_WIDTH >= in_display.x >= 0 and WIN_HEIGHT >= in_display.y >= 0:
+            if unit.up and self.iterations < (BLOCK_HEIGHT / SPEED):
+                unit.move_rect(0, -SPEED)
+                unit.animMoveUp.blit(self.display, self.camera.apply(unit))
+                self.iterations += 1
+                if self.iterations >= (BLOCK_HEIGHT / SPEED):
+                    unit.up = False
+                    unit.stay = True
+                    unit.stay_up = True
+                    self.iterations = 0
+                    unit.move(0, -1)
 
-        if unit.down and self.iterations < (BLOCK_HEIGHT/SPEED):
-            unit.move_rect(0, SPEED)
-            unit.animMoveDown.blit(self.display, self.camera.apply(unit))
-            self.iterations += 1
-            if self.iterations >= (BLOCK_HEIGHT/SPEED):
-                unit.down = False
-                unit.stay = True
-                unit.stay_down = True
-                self.iterations = 0
-                unit.move(0, 1)
+            if unit.down and self.iterations < (BLOCK_HEIGHT/SPEED):
+                unit.move_rect(0, SPEED)
+                unit.animMoveDown.blit(self.display, self.camera.apply(unit))
+                self.iterations += 1
+                if self.iterations >= (BLOCK_HEIGHT/SPEED):
+                    unit.down = False
+                    unit.stay = True
+                    unit.stay_down = True
+                    self.iterations = 0
+                    unit.move(0, 1)
 
-        if unit.right and self.iterations < (BLOCK_HEIGHT/SPEED):
-            unit.move_rect(SPEED, 0)
-            unit.animMoveRight.blit(self.display, self.camera.apply(unit))
-            self.iterations += 1
-            if self.iterations >= (BLOCK_HEIGHT/SPEED):
-                unit.right = False
-                unit.stay = True
-                unit.stay_right = True
-                self.iterations = 0
-                unit.move(1, 0)
+            if unit.right and self.iterations < (BLOCK_HEIGHT/SPEED):
+                unit.move_rect(SPEED, 0)
+                unit.animMoveRight.blit(self.display, self.camera.apply(unit))
+                self.iterations += 1
+                if self.iterations >= (BLOCK_HEIGHT/SPEED):
+                    unit.right = False
+                    unit.stay = True
+                    unit.stay_right = True
+                    self.iterations = 0
+                    unit.move(1, 0)
 
-        if unit.left and self.iterations < (BLOCK_HEIGHT/SPEED):
-            unit.move_rect(-SPEED, 0)
-            unit.animMoveLeft.blit(self.display, self.camera.apply(unit))
-            self.iterations += 1
-            if self.iterations >= (BLOCK_HEIGHT/SPEED):
-                unit.left = False
-                unit.stay = True
-                unit.stay_left = True
-                self.iterations = 0
-                unit.move(-1, 0)
+            if unit.left and self.iterations < (BLOCK_HEIGHT/SPEED):
+                unit.move_rect(-SPEED, 0)
+                unit.animMoveLeft.blit(self.display, self.camera.apply(unit))
+                self.iterations += 1
+                if self.iterations >= (BLOCK_HEIGHT/SPEED):
+                    unit.left = False
+                    unit.stay = True
+                    unit.stay_left = True
+                    self.iterations = 0
+                    unit.move(-1, 0)
 
-        if unit.attack_up and self.iterations < (BLOCK_HEIGHT/SPEED):
-            unit.animAttackUp.blit(self.display, self.camera.apply(unit))
-            self.iterations += 1
-            self.render_damage()
-            if self.iterations >= (BLOCK_HEIGHT/SPEED):
-                unit.attack_up = False
-                unit.stay = True
-                unit.stay_up = True
-                self.iterations = 0
+            if unit.attack_up and self.iterations < (BLOCK_HEIGHT/SPEED):
+                unit.animAttackUp.blit(self.display, self.camera.apply(unit))
+                self.iterations += 1
+                self.render_damage()
+                if self.iterations >= (BLOCK_HEIGHT/SPEED):
+                    unit.attack_up = False
+                    unit.stay = True
+                    unit.stay_up = True
+                    self.iterations = 0
 
-        if unit.attack_down and self.iterations < (BLOCK_HEIGHT/SPEED):
-            unit.animAttackDown.blit(self.display, self.camera.apply(unit))
-            self.iterations += 1
-            self.render_damage()
-            if self.iterations >= (BLOCK_HEIGHT/SPEED):
-                unit.attack_down = False
-                unit.stay = True
-                unit.stay_down = True
-                self.iterations = 0
-
-
-        if unit.attack_right and self.iterations < (BLOCK_HEIGHT/SPEED):
-            unit.animAttackRight.blit(self.display, self.camera.apply(unit))
-            self.iterations += 1
-            self.render_damage()
-            if self.iterations >= (BLOCK_HEIGHT/SPEED):
-                unit.attack_right = False
-                unit.stay = True
-                unit.stay_right = True
-                self.iterations = 0
+            if unit.attack_down and self.iterations < (BLOCK_HEIGHT/SPEED):
+                unit.animAttackDown.blit(self.display, self.camera.apply(unit))
+                self.iterations += 1
+                self.render_damage()
+                if self.iterations >= (BLOCK_HEIGHT/SPEED):
+                    unit.attack_down = False
+                    unit.stay = True
+                    unit.stay_down = True
+                    self.iterations = 0
 
 
-        if unit.attack_left and self.iterations < (BLOCK_HEIGHT/SPEED):
-            unit.animAttackLeft.blit(self.display, self.camera.apply(unit))
-            self.iterations += 1
-            self.render_damage()
-            if self.iterations >= (BLOCK_HEIGHT/SPEED):
-                unit.attack_left = False
-                unit.stay = True
-                unit.stay_left = True
-                self.iterations = 0
+            if unit.attack_right and self.iterations < (BLOCK_HEIGHT/SPEED):
+                unit.animAttackRight.blit(self.display, self.camera.apply(unit))
+                self.iterations += 1
+                self.render_damage()
+                if self.iterations >= (BLOCK_HEIGHT/SPEED):
+                    unit.attack_right = False
+                    unit.stay = True
+                    unit.stay_right = True
+                    self.iterations = 0
 
-        if unit.stay:
-            if unit.stay_up:
-                unit.animStayUp.blit(self.display, self.camera.apply(unit))
-            if unit.stay_down:
-                unit.animStayDown.blit(self.display, self.camera.apply(unit))
-            if unit.stay_right:
-                unit.animStayRight.blit(self.display, self.camera.apply(unit))
-            if unit.stay_left:
-                unit.animStayLeft.blit(self.display, self.camera.apply(unit))
+
+            if unit.attack_left and self.iterations < (BLOCK_HEIGHT/SPEED):
+                unit.animAttackLeft.blit(self.display, self.camera.apply(unit))
+                self.iterations += 1
+                self.render_damage()
+                if self.iterations >= (BLOCK_HEIGHT/SPEED):
+                    unit.attack_left = False
+                    unit.stay = True
+                    unit.stay_left = True
+                    self.iterations = 0
+
+            if unit.stay:
+                if unit.stay_up:
+                    unit.animStayUp.blit(self.display, self.camera.apply(unit))
+                if unit.stay_down:
+                    unit.animStayDown.blit(self.display, self.camera.apply(unit))
+                if unit.stay_right:
+                    unit.animStayRight.blit(self.display, self.camera.apply(unit))
+                if unit.stay_left:
+                    unit.animStayLeft.blit(self.display, self.camera.apply(unit))
 
 
 
