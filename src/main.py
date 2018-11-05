@@ -193,8 +193,8 @@ class Game:
 
             else:
                 if self.collision(block_x, block_y):
-                    # self.hero.init_path_finder(self.game_state)
-                    # self.hero.build_path()
+                    self.hero.init_path_finder(self.game_state)
+                    self.hero.build_path(block_x, block_y)
 
 
                     if self.hero.get_rect_y() - pixels_y == 50 and self.hero.get_rect_x() == pixels_x:
@@ -315,16 +315,15 @@ class Game:
      #   unit.rect.x = unit.x * BLOCK_WIDTH
      #   unit.rect.y = unit.y * BLOCK_HEIGHT
         if WIN_WIDTH >= in_display.x >= 0 and WIN_HEIGHT >= in_display.y >= 0:
-            if unit.up and unit.iterations < (BLOCK_HEIGHT / SPEED):
+            if unit.up and unit.iterations < (BLOCK_HEIGHT // SPEED):
                 unit.move_rect(0, -SPEED)
-                unit.move(0, -SPEED / BLOCK_HEIGHT)
                 unit.animMoveUp.blit(self.display, self.camera.apply(unit))
                 unit.iterations += 1
-                if unit.iterations >= (BLOCK_HEIGHT / SPEED):
+                if unit.iterations >= (BLOCK_HEIGHT // SPEED):
                     unit.falseStay()
                     unit.falseAttack()
                     unit.falseMove()
-                  #  unit.move(0, -1)
+                    unit.move(0, -1)
 
                   #  self.update_state()
                   #  t = self.game_state[unit.y][unit.x].symbol
@@ -335,7 +334,6 @@ class Game:
                     unit.stay = True
                     unit.stay_up = True
                     unit.iterations = 0
-                    # unit.move(0, -1)
                     if unit == self.hero:
                         self.step = True
 
@@ -344,11 +342,10 @@ class Game:
                 print("yep")
 
                 unit.move_rect(0, SPEED)
-                unit.move(0, SPEED / BLOCK_HEIGHT)
+                #unit.move(0, SPEED / BLOCK_HEIGHT)
 
                 unit.animMoveDown.blit(self.display, self.camera.apply(unit))
 
-                # unit.iterations += 1
 
                 unit.iterations += 1
 
@@ -361,13 +358,13 @@ class Game:
                     unit.stay_down = True
                     unit.iterations = 0
                     #self.update_state()
-                    # unit.move(0, 1)
+                    unit.move(0, 1)
                     if unit == self.hero:
                         self.step = True
 
             if unit.right and unit.iterations < (BLOCK_HEIGHT / SPEED):
                 unit.move_rect(SPEED, 0)
-                unit.move(SPEED / BLOCK_HEIGHT, 0)
+                #unit.move(SPEED / BLOCK_HEIGHT, 0)
                 unit.animMoveRight.blit(self.display, self.camera.apply(unit))
                 unit.iterations += 1
                 if unit.iterations >= (BLOCK_HEIGHT / SPEED):
@@ -379,13 +376,13 @@ class Game:
                     unit.stay_right = True
                     unit.iterations = 0
                    # self.update_state()
-                    # unit.move(1, 0)
+                    unit.move(1, 0)
                     if unit == self.hero:
                         self.step = True
 
             if unit.left and unit.iterations < (BLOCK_HEIGHT / SPEED):
                 unit.move_rect(-SPEED, 0)
-                unit.move(-SPEED / BLOCK_HEIGHT, 0)
+                #unit.move(-SPEED / BLOCK_HEIGHT, 0)
                 unit.animMoveLeft.blit(self.display, self.camera.apply(unit))
                 unit.iterations += 1
                 if unit.iterations >= (BLOCK_HEIGHT / SPEED):
@@ -397,7 +394,7 @@ class Game:
                     unit.stay_left = True
                     unit.iterations = 0
                    # self.update_state()
-                    # unit.move(-1, 0)
+                    unit.move(-1, 0)
                     if unit == self.hero:
                         self.step = True
 
@@ -548,10 +545,8 @@ class Game:
 
     def enemy_render(self):
         for enemy in self.enemies:
-            enemy.set_rect_pos(enemy.x * BLOCK_WIDTH, enemy.y * BLOCK_HEIGHT)
+            #enemy.set_rect_pos(enemy.x * BLOCK_WIDTH, enemy.y * BLOCK_HEIGHT)
             self.unit_render(enemy)
-
-            # enemy.tile.draw(enemy.x * BLOCK_WIDTH, enemy.y * BLOCK_HEIGHT, self.display, self.camera, self.images)
 
     def set_enemies(self):
         enemy_count = random.randint(MIN_ENEMY_COUNT, MAX_ENEMY_COUNT)
