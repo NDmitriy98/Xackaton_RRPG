@@ -30,6 +30,7 @@ class Game:
         self.enemies = []
         self.step = True
         self.npc_step = False
+        self.steps = 0
 
     def new(self):  # Начало новой игры
 
@@ -80,7 +81,7 @@ class Game:
 
         self.set_enemies()
         self.update_state()
-        #self.game_state.debug_print_map()
+        # self.game_state.debug_print_map()
 
     def load_images(self):
         self.images = {}
@@ -101,18 +102,15 @@ class Game:
 
     def update_state(self):
         self.game_state = deepcopy(self.game_map.body)
-        self.game_state[self.hero.y][self.hero.x].symbol = self.hero.tile.symbol
+        self.game_state[int(self.hero.y)][int(self.hero.x)].symbol = self.hero.tile.symbol
         for enemy in self.enemies:
             self.game_state[enemy.y][enemy.x].symbol = enemy.tile.symbol
-
 
         self.hero.init_path_finder(self.game_state)
         for enemy in self.enemies:
             enemy.init_path_finder(self.game_state)
 
-
-        #self.game_state.debug_print_map()
-
+        # self.game_state.debug_print_map()
 
     def run(self):
         self.crashed = False
@@ -120,7 +118,7 @@ class Game:
             self.event()
             self.update()
             self.render()
-            #print("x, y " + str(self.hero.x) + " " + str(self.hero.y))
+            # print("x, y " + str(self.hero.x) + " " + str(self.hero.y))
             pg.display.update()
             self.clock.tick(30)
 
@@ -142,7 +140,11 @@ class Game:
             block_x = int((mouse_position[0] - self.camera.coefficient_x) / BLOCK_WIDTH)  # Позиция в блоках
             block_y = int((mouse_position[1] - self.camera.coefficient_y) / BLOCK_HEIGHT)
 
-            #print(str(block_x) + " " + str(block_y))
+            print("pos "+ str(self.hero.x) + " " + str(self.hero.y))
+            print("block " + str(block_x)+ " " + str(block_y))
+            print(str(self.game_state[block_y][block_x].symbol))
+            #print("unit " + str(self.hero.y) + " " + str(self.hero.x))
+            # print(str(block_x) + " " + str(block_y))
 
             pixels_x = block_x * BLOCK_WIDTH  # Позиция в пикселях
             pixels_y = block_y * BLOCK_HEIGHT
@@ -153,38 +155,37 @@ class Game:
                         print("punch")
                         damage = self.hero.get_attack()
                         enemy.in_damage(damage)
-                        #self.print_damage(block_x, block_y, damage)
+                        # self.print_damage(block_x, block_y, damage)
                         if not enemy.alive:
                             self.enemies.remove(enemy)
+                            self.hero.add_experience(8)
                             try:
                                 self.update_state()
                             except Exception as msg:
                                 print(msg)
 
-
-
                         if self.hero.get_rect_y() - pixels_y == 50 and self.hero.get_rect_x() == pixels_x:
                             ############UP ATTACK
                             self.hero.attack_up = True
-                            self.step = False
+                            self.npc_start()
                             self.hero.falseStay()
                             self.hero.falseMove()
                         if self.hero.get_rect_y() - pixels_y == -50 and self.hero.get_rect_x() == pixels_x:
                             ############DOWN ATTACK
                             self.hero.attack_down = True
-                            self.step = False
+                            self.npc_start()
                             self.hero.falseStay()
                             self.hero.falseMove()
                         if self.hero.get_rect_y() == pixels_y and self.hero.get_rect_x() - pixels_x == -50:
                             ############RIGHT ATTACK
                             self.hero.attack_right = True
-                            self.step = False
+                            self.npc_start()
                             self.hero.falseStay()
                             self.hero.falseMove()
                         if self.hero.get_rect_y() == pixels_y and self.hero.get_rect_x() - pixels_x == 50:
                             ############LEFT ATTACK
                             self.hero.attack_left = True
-                            self.step = False
+                            self.npc_start()
                             self.hero.falseStay()
                             self.hero.falseMove()
 
@@ -192,44 +193,38 @@ class Game:
 
             else:
                 if self.collision(block_x, block_y):
-                    #self.hero.init_path_finder(self.game_state)
-                    #self.hero.build_path()
+                    # self.hero.init_path_finder(self.game_state)
+                    # self.hero.build_path()
 
-                    def unitMove():
-                        for unit in self.enemies:
-                            unit.stay = False
-                            unit.move_down = True
 
                     if self.hero.get_rect_y() - pixels_y == 50 and self.hero.get_rect_x() == pixels_x:
                         ############UP MOVE
                         self.hero.up = True
-                        self.step = False
+                        self.npc_start()
                         self.hero.falseStay()
                         self.hero.falseAttack()
-                        #unitMove()
+                        # unitMove()
                     if self.hero.get_rect_y() - pixels_y == -50 and self.hero.get_rect_x() == pixels_x:
                         ############DOWN MOVE
                         self.hero.down = True
-                        self.step = False
+                        self.npc_start()
                         self.hero.falseStay()
                         self.hero.falseAttack()
-                        #unitMove()
+                        # unitMove()
                     if self.hero.get_rect_y() == pixels_y and self.hero.get_rect_x() - pixels_x == -50:
                         ############RIGHT MOVE
                         self.hero.right = True
-                        self.step = False
+                        self.npc_start()
                         self.hero.falseStay()
                         self.hero.falseAttack()
-                        #unitMove()
+                        # unitMove()
                     if self.hero.get_rect_y() == pixels_y and self.hero.get_rect_x() - pixels_x == 50:
                         ############LEFT MOVE
                         self.hero.left = True
-                        self.step = False
+                        self.npc_start()
                         self.hero.falseStay()
                         self.hero.falseAttack()
-                        #unitMove()
-
-
+                        # unitMove()
 
     def event_keys(self, event):
         if event.type == pg.QUIT:
@@ -264,6 +259,10 @@ class Game:
                 return True
         return False
 
+    def npc_start(self):
+        for enemy in self.enemies:
+            enemy.npc_step = True
+
     def update(self):
         self.camera.update(self.hero)
 
@@ -274,79 +273,133 @@ class Game:
         self.unit_render(self.hero)
         self.hud_render()
         self.inventory_render()
-       # self.update_state()
+
+    # self.update_state()
 
     def render_damage(self):
         damage = self.hero.get_attack()
-        text =self.hero.inventory.font_big.render(" - " + str(damage) + " HP"[0:9], True, (200, 220, 250))
+        text = self.hero.inventory.font_big.render(" - " + str(damage) + " HP"[0:9], True, (200, 220, 250))
         print("rect" + str(self.hero.get_rect_x()) + " " + str(self.hero.get_rect_y()))
-        self.display.blit(text, [WIN_WIDTH/2, WIN_HEIGHT/2 - 100 + self.hero.iterations * SPEED])
-
+        self.display.blit(text, [WIN_WIDTH / 2, WIN_HEIGHT / 2 - 100 + self.hero.iterations * SPEED])
 
     def unit_render(self, unit):
+
+        if unit != self.hero and unit.npc_step:
+            if unit.movement:
+                if unit.stay == True:
+                    k = unit.movement.pop()
+                    unit.npc_step = False
+                    if k == "L":
+                        print("L")
+                        unit.falseStay()
+                        unit.falseAttack()
+                        unit.left = True
+                    if k == "R":
+                        print("R")
+                        unit.falseStay()
+                        unit.falseAttack()
+                        unit.right = True
+                    if k == "U":
+                        print("U")
+                        unit.falseStay()
+                        unit.falseAttack()
+                        unit.up = True
+                    if k == "D":
+                        print("D")
+                        unit.falseStay()
+                        unit.falseAttack()
+                        unit.down = True
+
         in_display = self.camera.apply(unit)
         if WIN_WIDTH >= in_display.x >= 0 and WIN_HEIGHT >= in_display.y >= 0:
             if unit.up and unit.iterations < (BLOCK_HEIGHT / SPEED):
                 unit.move_rect(0, -SPEED)
+                unit.move(0, -SPEED / BLOCK_HEIGHT)
                 unit.animMoveUp.blit(self.display, self.camera.apply(unit))
                 unit.iterations += 1
                 if unit.iterations >= (BLOCK_HEIGHT / SPEED):
+                    unit.falseStay()
+                    unit.falseAttack()
+                    unit.falseMove()
+
+                  #  self.update_state()
+                    #self.game_state[unit.y][unit.x].symbol
+                    #print(str(self.game_state[block_y][block_x].symbol))
                     unit.up = False
                     unit.stay = True
                     unit.stay_up = True
                     unit.iterations = 0
-                    unit.move(0, -1)
+                    # unit.move(0, -1)
                     if unit == self.hero:
                         self.step = True
 
-
-            #print("hero" + str( self.hero.iterations))
-            if unit.down and unit.iterations < (BLOCK_HEIGHT/SPEED):
+            # print("hero" + str( self.hero.iterations))
+            if unit.down and unit.iterations < (BLOCK_HEIGHT / SPEED):
                 print("yep")
 
                 unit.move_rect(0, SPEED)
+                unit.move(0, SPEED / BLOCK_HEIGHT)
+
                 unit.animMoveDown.blit(self.display, self.camera.apply(unit))
+
+                # unit.iterations += 1
+
                 unit.iterations += 1
-                if unit.iterations >= (BLOCK_HEIGHT/SPEED):
+
+                if unit.iterations >= (BLOCK_HEIGHT / SPEED):
+                    unit.falseStay()
+                    unit.falseAttack()
+                    unit.falseMove()
                     unit.down = False
                     unit.stay = True
                     unit.stay_down = True
                     unit.iterations = 0
-                    unit.move(0, 1)
+                    #self.update_state()
+                    # unit.move(0, 1)
                     if unit == self.hero:
                         self.step = True
 
-            if unit.right and unit.iterations < (BLOCK_HEIGHT/SPEED):
+            if unit.right and unit.iterations < (BLOCK_HEIGHT / SPEED):
                 unit.move_rect(SPEED, 0)
+                unit.move(SPEED / BLOCK_HEIGHT, 0)
                 unit.animMoveRight.blit(self.display, self.camera.apply(unit))
                 unit.iterations += 1
-                if unit.iterations >= (BLOCK_HEIGHT/SPEED):
+                if unit.iterations >= (BLOCK_HEIGHT / SPEED):
+                    unit.falseStay()
+                    unit.falseAttack()
+                    unit.falseMove()
                     unit.right = False
                     unit.stay = True
                     unit.stay_right = True
                     unit.iterations = 0
-                    unit.move(1, 0)
+                   # self.update_state()
+                    # unit.move(1, 0)
                     if unit == self.hero:
                         self.step = True
 
-            if unit.left and unit.iterations < (BLOCK_HEIGHT/SPEED):
+            if unit.left and unit.iterations < (BLOCK_HEIGHT / SPEED):
                 unit.move_rect(-SPEED, 0)
+                unit.move(-SPEED / BLOCK_HEIGHT, 0)
                 unit.animMoveLeft.blit(self.display, self.camera.apply(unit))
                 unit.iterations += 1
-                if unit.iterations >= (BLOCK_HEIGHT/SPEED):
+                if unit.iterations >= (BLOCK_HEIGHT / SPEED):
+                    unit.falseStay()
+                    unit.falseAttack()
+                    unit.falseMove()
                     unit.left = False
                     unit.stay = True
                     unit.stay_left = True
                     unit.iterations = 0
-                    unit.move(-1, 0)
+                   # self.update_state()
+                    # unit.move(-1, 0)
                     if unit == self.hero:
                         self.step = True
 
-            if unit.attack_up and unit.iterations < (BLOCK_HEIGHT/SPEED):
+            if unit.attack_up and unit.iterations < (BLOCK_HEIGHT / SPEED):
                 unit.animAttackUp.blit(self.display, self.camera.apply(unit))
                 unit.iterations += 1
                 self.render_damage()
-                if unit.iterations >= (BLOCK_HEIGHT/SPEED):
+                if unit.iterations >= (BLOCK_HEIGHT / SPEED):
                     unit.attack_up = False
                     unit.stay = True
                     unit.stay_up = True
@@ -354,11 +407,11 @@ class Game:
                     if unit == self.hero:
                         self.step = True
 
-            if unit.attack_down and unit.iterations < (BLOCK_HEIGHT/SPEED):
+            if unit.attack_down and unit.iterations < (BLOCK_HEIGHT / SPEED):
                 unit.animAttackDown.blit(self.display, self.camera.apply(unit))
                 unit.iterations += 1
                 self.render_damage()
-                if unit.iterations >= (BLOCK_HEIGHT/SPEED):
+                if unit.iterations >= (BLOCK_HEIGHT / SPEED):
                     unit.attack_down = False
                     unit.stay = True
                     unit.stay_down = True
@@ -366,12 +419,11 @@ class Game:
                     if unit == self.hero:
                         self.step = True
 
-
-            if unit.attack_right and unit.iterations < (BLOCK_HEIGHT/SPEED):
+            if unit.attack_right and unit.iterations < (BLOCK_HEIGHT / SPEED):
                 unit.animAttackRight.blit(self.display, self.camera.apply(unit))
                 unit.iterations += 1
                 self.render_damage()
-                if unit.iterations >= (BLOCK_HEIGHT/SPEED):
+                if unit.iterations >= (BLOCK_HEIGHT / SPEED):
                     unit.attack_right = False
                     unit.stay = True
                     unit.stay_right = True
@@ -379,12 +431,11 @@ class Game:
                     if unit == self.hero:
                         self.step = True
 
-
-            if unit.attack_left and unit.iterations < (BLOCK_HEIGHT/SPEED):
+            if unit.attack_left and unit.iterations < (BLOCK_HEIGHT / SPEED):
                 unit.animAttackLeft.blit(self.display, self.camera.apply(unit))
                 unit.iterations += 1
                 self.render_damage()
-                if unit.iterations >= (BLOCK_HEIGHT/SPEED):
+                if unit.iterations >= (BLOCK_HEIGHT / SPEED):
                     unit.attack_left = False
                     unit.stay = True
                     unit.stay_left = True
@@ -404,8 +455,6 @@ class Game:
                 if unit == self.hero:
                     self.step = True
 
-
-
     def inventory_render(self):
         if self.hero.inventory.opened:
             self.display.blit(self.hero.inventory.background, (20, 50))
@@ -414,8 +463,10 @@ class Game:
                     self.hero.inventory.font_big.render(str(self.hero.get_protection())[0:6], True, (200, 220, 180)),
                     self.hero.inventory.font_big.render(str(self.hero.info)[0:9], True, (200, 220, 180)),
                     self.hero.inventory.font_big.render(str(self.hero.level)[0:4], True, (200, 220, 180)),
-                    self.hero.inventory.font_default.render((str(self.hero.hp))+"/"+str(self.hero.get_hp())[0:10], True, (200, 220, 180)),
-                    self.hero.inventory.font_default.render(str(len(self.hero.inventory.item_list)) + "/24"[0:6], True, (200, 220, 180))]
+                    self.hero.inventory.font_default.render((str(self.hero.hp)) + "/" + str(self.hero.get_hp())[0:10],
+                                                            True, (200, 220, 180)),
+                    self.hero.inventory.font_default.render(str(len(self.hero.inventory.item_list)) + "/24"[0:6], True,
+                                                            (200, 220, 180))]
 
             self.display.blit(text[0], [650, 390])
             self.display.blit(text[1], [770, 390])
@@ -460,25 +511,26 @@ class Game:
         self.display.blit(self.hud_background, (20, 500))
         self.display.blit(self.hud_level_background, (280, 500))
 
-        hp = self.hero.hp/self.hero.get_max_hp()
-        mp = self.hero.mp/self.hero.get_max_mp()
-        exp = self.hero.experience/(self.hero.level * 10)
+        hp = self.hero.hp / self.hero.get_max_hp()
+        mp = self.hero.mp / self.hero.get_max_mp()
+        exp = self.hero.experience / (self.hero.level * 10)
 
-        pg.draw.rect(self.display, (255, 50, 50), (70, 514, hp*196, 31))
+        pg.draw.rect(self.display, (255, 50, 50), (70, 514, hp * 196, 31))
         pg.draw.rect(self.display, (50, 50, 255), (70, 559, mp * 196, 26))
         pg.draw.rect(self.display, (200, 200, 200), (70, 604, exp * 196, 11))
 
         text = [self.hero.inventory.font_ultra_big.render(str(self.hero.level)[0:3], True, (200, 200, 200)),
-                self.hero.inventory.font_big.render(str(self.hero.hp) + "/" + str(self.hero.get_max_hp())[0:8], True, (200, 220, 180)),
-                self.hero.inventory.font_big.render(str(self.hero.mp) + "/" + str(self.hero.get_max_mp())[0:8], True, (200, 200, 200)),
-                self.hero.inventory.font_small.render(str(self.hero.experience) + "/" + str(self.hero.level*10)[0:8], True, (10, 20, 10))]
+                self.hero.inventory.font_big.render(str(self.hero.hp) + "/" + str(self.hero.get_max_hp())[0:8], True,
+                                                    (200, 220, 180)),
+                self.hero.inventory.font_big.render(str(self.hero.mp) + "/" + str(self.hero.get_max_mp())[0:8], True,
+                                                    (200, 200, 200)),
+                self.hero.inventory.font_small.render(str(self.hero.experience) + "/" + str(self.hero.level * 10)[0:8],
+                                                      True, (10, 20, 10))]
 
         self.display.blit(text[0], [295, 520])
         self.display.blit(text[1], [100, 517])
         self.display.blit(text[2], [100, 560])
         self.display.blit(text[3], [100, 603])
-
-
 
     def map_render(self):
 
@@ -493,7 +545,7 @@ class Game:
             enemy.set_rect_pos(enemy.x * BLOCK_WIDTH, enemy.y * BLOCK_HEIGHT)
             self.unit_render(enemy)
 
-            #enemy.tile.draw(enemy.x * BLOCK_WIDTH, enemy.y * BLOCK_HEIGHT, self.display, self.camera, self.images)
+            # enemy.tile.draw(enemy.x * BLOCK_WIDTH, enemy.y * BLOCK_HEIGHT, self.display, self.camera, self.images)
 
     def set_enemies(self):
         enemy_count = random.randint(MIN_ENEMY_COUNT, MAX_ENEMY_COUNT)

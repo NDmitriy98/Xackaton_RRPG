@@ -12,8 +12,12 @@ class Skeleton(Enemy):
         self.hp = 10
         self.info = "Skeleton"
         self.tile = Tile(SKELETON_TILE, True)
-        self.down = True
-        self.stay = False
+        #self.down = True
+       #self.stay = False
+        self.movement = ["L", "U", "R", "D","L", "U", "R", "D","L", "U", "R", "D","L", "U", "R", "D",
+                         "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "D",
+                         "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "D",
+                         "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "R."]
 
 
 
