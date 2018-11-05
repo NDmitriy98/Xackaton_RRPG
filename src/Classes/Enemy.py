@@ -10,3 +10,4 @@ class Enemy(Unit):
         self.drop = drop
         self.visibility = visibility
         self.tile.symbol = 'E'
+        self.npc_step = False
