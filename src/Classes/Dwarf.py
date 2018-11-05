@@ -1,4 +1,5 @@
 from src.Classes.Enemy import Enemy
+from src.Classes.Item import Item
 from src.Tile import *
 from src.Animations.DwarfAnimation import *
 
@@ -18,6 +19,14 @@ class Dwarf(Enemy):
                          "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "D",
                          "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "D",
                          "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "R"]
+
+        helm = Item
+        helm.img = pg.image.load('Drawable/start_armor.png')
+        helm.info = "Каска гнома"
+        helm.description = "Можно переплавить"
+        helm.cost = 30
+
+        self.drop = helm
 
 
 

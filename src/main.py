@@ -60,9 +60,14 @@ class Game:
 
         heal_poition = Potion.Potion
         heal_poition.img = pg.image.load('Drawable/heal.png')
-        heal_poition.info = "Зелье лечения"
-        heal_poition.description = "+25HP"
+        heal_poition.info = "Зелье опыта"
+        heal_poition.description = "+100 опыта"
         heal_poition.cost = 15
+
+
+
+
+
 
         self.hero.inventory.add_item(heal_poition)
         self.hero.inventory.add_item(heal_poition)
@@ -127,10 +132,19 @@ class Game:
         for event in pg.event.get():
             self.event_keys(event)
             if self.hero.inventory.opened:
-                self.hero.inventory.inventory_event(event)
+                res = self.hero.inventory.inventory_event(event)
+                self.check_res(res)
             else:
                 if self.hero.stay:
                     self.move_event(event)
+
+
+    def check_res(self, res):
+       # if res == 0:
+        #    print("NO RES")
+        if res == 1:
+            self.hero.add_experience(500)
+
 
     def move_event(self, event):
         if event.type == pg.MOUSEBUTTONDOWN:
@@ -152,6 +166,8 @@ class Game:
                             enemy.in_damage(damage)
                             self.npc_start()
                             if not enemy.alive:
+                                if enemy.drop:
+                                    self.hero.inventory.item_list.append(enemy.drop)
                                 self.enemies.remove(enemy)
                                 self.hero.add_experience(8)
                                 try:

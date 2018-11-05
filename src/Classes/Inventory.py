@@ -28,6 +28,7 @@ class Inventory:
             self.item_list.append(item)
 
     def inventory_event(self, event):
+            result = 0
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_position = pygame.mouse.get_pos()
                 block = False
@@ -36,6 +37,9 @@ class Inventory:
                             self.item_y + 190 > mouse_position[1] > self.item_y+150:
                         block = True
                         use = self.item_list[self.item_num].use()
+                        item = self.item_list[self.item_num]
+                        if item.info == "Зелье опыта":
+                            result = 1
                         if use:
                             if use.class_name == "Weapon":
                                 if self.weapon:
@@ -83,7 +87,7 @@ class Inventory:
                     print("yes!")
                     self.item_list.append(self.armor)
                     self.armor = None
-
+            return result
 
 
 
