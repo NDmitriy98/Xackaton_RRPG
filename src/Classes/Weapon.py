@@ -2,7 +2,7 @@ from src.Classes.Item import Item
 
 
 class Weapon(Item):
-    def __init__(self, attack=0, condition=100):
+    def __init__(self, attack=1, condition=100):
         super().__init__()
         self.attack = attack
         self.condition = condition
