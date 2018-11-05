@@ -7,6 +7,33 @@ from src.Classes import Item, Armor, Weapon, Inventory
 from src.Classes.Unit import Unit
 
 ANIMATION_DELAY = 0.15
+
+
+ANIMATION_ATTACK_UP = ['Drawable/hero/attack_up1.png',
+                       'Drawable/hero/attack_up2.png',
+                       'Drawable/hero/attack_up3.png',
+                       'Drawable/hero/attack_up4.png',
+                       'Drawable/hero/attack_up5.png']
+
+ANIMATION_ATTACK_DOWN = ['Drawable/hero/attack_down1.png',
+                         'Drawable/hero/attack_down2.png',
+                         'Drawable/hero/attack_down3.png',
+                         'Drawable/hero/attack_down4.png',
+                         'Drawable/hero/attack_down5.png']
+
+ANIMATION_ATTACK_RIGHT = ['Drawable/hero/attack_right1.png',
+                          'Drawable/hero/attack_right2.png',
+                          'Drawable/hero/attack_right3.png',
+                          'Drawable/hero/attack_right4.png',
+                          'Drawable/hero/attack_right5.png']
+
+ANIMATION_ATTACK_LEFT = ['Drawable/hero/attack_left1.png',
+                         'Drawable/hero/attack_left2.png',
+                         'Drawable/hero/attack_left3.png',
+                         'Drawable/hero/attack_left4.png',
+                         'Drawable/hero/attack_left5.png']
+
+
 ANIMATION_STAY_UP = ['Drawable/hero/stay_up1.png',
                      'Drawable/hero/stay_up2.png',
                      'Drawable/hero/stay_up3.png',
@@ -31,7 +58,6 @@ ANIMATION_STAY_LEFT = ['Drawable/hero/stay_left1.png',
                        'Drawable/hero/stay_left2.png',
                        'Drawable/hero/stay_left3.png',
                        'Drawable/hero/stay_left4.png']
-
 
 
 ANIMATION_MOVE_UP = ['Drawable/hero/move_up1.png',
@@ -83,6 +109,10 @@ class Character(Unit):
         self.stay_down = False
         self.stay_right = False
         self.stay_left = False
+        self.attack_up = False
+        self.attack_down = False
+        self.attack_right = False
+        self.attack_left = False
 
         def makeAnim(animList, delay):
             boltAnim = []
@@ -114,6 +144,18 @@ class Character(Unit):
 
         self.animMoveLeft = makeAnim(ANIMATION_MOVE_LEFT, ANIMATION_DELAY)
         self.animMoveLeft.play()
+
+        self.animAttackUp = makeAnim(ANIMATION_ATTACK_UP, ANIMATION_DELAY)
+        self.animAttackUp.play()
+
+        self.animAttackDown = makeAnim(ANIMATION_ATTACK_DOWN, ANIMATION_DELAY)
+        self.animAttackDown.play()
+
+        self.animAttackRight = makeAnim(ANIMATION_ATTACK_RIGHT, ANIMATION_DELAY)
+        self.animAttackRight.play()
+
+        self.animAttackLeft = makeAnim(ANIMATION_ATTACK_LEFT, ANIMATION_DELAY)
+        self.animAttackLeft.play()
 
 
 
@@ -177,3 +219,23 @@ class Character(Unit):
     def set_armor(self, armor: Armor.Armor):
         self.inventory.armor = armor
         self.full_protection = self.protection + armor.protection
+
+
+    def falseStay(self):
+        self.stay = False
+        self.stay_up = False
+        self.stay_down = False
+        self.stay_right = False
+        self.stay_left = False
+
+    def falseMove(self):
+        self.up = False
+        self.down = False
+        self.right = False
+        self.left = False
+
+    def falseAttack(self):
+        self.attack_up = False
+        self.attack_down = False
+        self.attack_right = False
+        self.attack_left = False

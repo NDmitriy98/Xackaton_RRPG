@@ -147,6 +147,7 @@ class Map:
                         self.body[room.y1][i-1].symbol == WALL_TILE:
                     self.body[room.y1][i].symbol = DOOR_TILE
 
+
             for i in range(room.x1+1, room.x2):
                 if (self.body[room.y2][i].symbol == ROAD_TILE) and \
                         (self.body[room.y2][i+1].symbol == WALL_TILE) and \
