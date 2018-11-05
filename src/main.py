@@ -105,6 +105,12 @@ class Game:
         for enemy in self.enemies:
             self.game_state[enemy.y][enemy.x].symbol = enemy.tile.symbol
 
+
+        self.hero.init_path_finder(self.game_state)
+        for enemy in self.enemies:
+            enemy.init_path_finder(self.game_state)
+
+
         #self.game_state.debug_print_map()
 
 
@@ -432,7 +438,6 @@ class Game:
         self.camera.coefficient_y = self.camera.apply(Block(0, 0)).y
 
     def enemy_render(self):
-        #self.display.blit(self.hero.img, self.camera.apply(self.hero))
         for enemy in self.enemies:
             enemy.set_rect_pos(enemy.x * BLOCK_WIDTH, enemy.y * BLOCK_HEIGHT)
             self.unit_render(enemy)
