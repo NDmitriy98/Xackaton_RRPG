@@ -65,11 +65,6 @@ class Game:
         heal_poition.description = "+100 опыта"
         heal_poition.cost = 15
 
-
-
-
-
-
         self.hero.inventory.add_item(heal_poition)
         self.hero.inventory.add_item(heal_poition)
         self.hero.inventory.add_item(heal_poition)
@@ -97,6 +92,7 @@ class Game:
         self.hero.img = pg.image.load('Drawable/1.png')
         self.hud_background = pg.image.load('Drawable/hud.png')
         self.hud_level_background = pg.image.load('Drawable/hud_level.png')
+        self.time_ico = pg.image.load('Drawable/time_ico.png')
 
         self.game_map.generate_map()
 
@@ -150,13 +146,11 @@ class Game:
                 if self.hero.stay:
                     self.move_event(event)
 
-
     def check_res(self, res):
-       # if res == 0:
+        # if res == 0:
         #    print("NO RES")
         if res == 1:
             self.hero.add_experience(500)
-
 
     def move_event(self, event):
         if event.type == pg.MOUSEBUTTONDOWN:
@@ -166,8 +160,11 @@ class Game:
             block_y = int((mouse_position[1] - self.camera.coefficient_y) / BLOCK_HEIGHT)
 
             print("pos " + str(self.hero.x) + " " + str(self.hero.y))
-            print("block " + str(block_x)+ " " + str(block_y))
+            print("block " + str(block_x) + " " + str(block_y))
             print("tile " + str(self.game_state[block_y][block_x].symbol))
+
+            if (WIN_WIDTH / 2 + 125) > mouse_position[0] > (WIN_WIDTH / 2 - 125) and 70 > mouse_position[1] > 30:
+                self.npc_start()
 
             if self.hero.get_destination(block_x, block_y):
                 if self.check_npc(block_x, block_y):
@@ -466,6 +463,14 @@ class Game:
                 self.display.blit(self.hero.inventory.armor.img, (180, 385))
 
     def hud_render(self):
+
+        if self.hero.stay:
+            pg.draw.rect(self.display, (0, 50, 50), (WIN_WIDTH / 2 - 125, 30, 250, 40))
+            text = self.hero.inventory.font_default.render("Пропуск хода", True, (200, 200, 200))
+            self.display.blit(text, [WIN_WIDTH / 2 - 80, 38])
+            self.display.blit(self.time_ico, (WIN_WIDTH / 2 - 123, 32))
+
+
         self.display.blit(self.hud_background, (20, 500))
         self.display.blit(self.hud_level_background, (280, 500))
 
