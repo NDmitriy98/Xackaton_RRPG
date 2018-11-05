@@ -1,3 +1,5 @@
+from math import sqrt
+
 import pygame
 
 from pygame.rect import Rect
@@ -117,6 +119,13 @@ class Character(Unit):
         if self.hp <= 0:
             self.hp = 0
             self.death()
+
+    def get_destination(self, x, y):
+        if int(sqrt((self.x - x)**2 + (self.y - y)**2)) == 1:
+            return True
+        else:
+            return False
+
 
 
     def set_weapon(self, weapon: Weapon.Weapon):

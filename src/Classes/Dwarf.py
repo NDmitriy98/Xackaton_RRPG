@@ -1,17 +1,17 @@
 from src.Classes.Enemy import Enemy
 from src.Tile import *
-from src.Animations.SkeletonAnimation import *
+from src.Animations.DwarfAnimation import *
 
 
-class Skeleton(Enemy):
+class Dwarf(Enemy):
     def __init__(self):
         super().__init__()
         self.level = 1
         self.attack = 2
         self.protection = 1
         self.hp = 10
-        self.info = "Skeleton"
-        self.tile = Tile(SKELETON_TILE, True)
+        self.info = "Dwarf"
+        self.tile = Tile(DWARF_TILE, True)
         #self.down = True
        #self.stay = False
         self.current_path = []
