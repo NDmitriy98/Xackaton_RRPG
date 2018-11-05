@@ -24,7 +24,7 @@ class Game:
         self.clock = pg.time.Clock()
         self.images = {}
         self.map = Map()
-        self.game_state = deepcopy(self.map)
+        self.game_state = deepcopy(self.map.body)
         self.hero = Character.Character()
         self.inventory = Inventory.Inventory()
         self.enemies = []
@@ -80,7 +80,7 @@ class Game:
 
         self.set_enemies()
         self.update_state()
-        self.game_state.debug_print_map()
+        #self.game_state.debug_print_map()
 
     def load_images(self):
         self.images = {}
@@ -100,10 +100,12 @@ class Game:
         self.camera = Camera(total_level_width, total_level_height)
 
     def update_state(self):
-        self.game_state = deepcopy(self.map)
-        self.game_state.body[self.hero.y][self.hero.x].symbol = self.hero.tile.symbol
+        self.game_state = deepcopy(self.map.body)
+        self.game_state[self.hero.y][self.hero.x].symbol = self.hero.tile.symbol
         for enemy in self.enemies:
-            self.game_state.body[enemy.y][enemy.x].symbol = enemy.tile.symbol
+            self.game_state[enemy.y][enemy.x].symbol = enemy.tile.symbol
+
+        #self.game_state.debug_print_map()
 
 
     def run(self):
@@ -213,8 +215,8 @@ class Game:
                 self.hero.add_experience(3)
 
     def check_npc(self, block_x, block_y):
-        if len(self.game_state.body[0]) > block_x >= 0 and len(self.game_state.body) > block_y >= 0:
-            if self.game_state.body[block_y][block_x].symbol == SKELETON_TILE:
+        if len(self.game_state[0]) > block_x >= 0 and len(self.game_state) > block_y >= 0:
+            if self.game_state[block_y][block_x].symbol == SKELETON_TILE:
                 return True
         return False
 
@@ -241,6 +243,7 @@ class Game:
         self.character_render()
         self.hud_render()
         self.inventory_render()
+        #self.update_state()
 
     def character_render(self):
         if self.hero.up and self.iterations < (BLOCK_HEIGHT/SPEED):
@@ -446,7 +449,7 @@ class Game:
                     pos_x = random.randint(room.x1, room.x2)
                     pos_y = random.randint(room.y1, room.y2)
                     while self.map.body[pos_y][pos_x].symbol != FLOOR_TILE and \
-                            self.game_state.body[pos_y][pos_x].symbol != FLOOR_TILE:
+                            self.game_state[pos_y][pos_x].symbol != FLOOR_TILE:
                         pos_x = random.randint(room.x1, room.x2)
                         pos_y = random.randint(room.y1, room.y2)
 
