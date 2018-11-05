@@ -247,7 +247,7 @@ class Game:
         self.unit_render(self.hero)
         self.hud_render()
         self.inventory_render()
-        #self.update_state()
+       # self.update_state()
 
     def render_damage(self):
         damage = self.hero.get_attack()
