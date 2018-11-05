@@ -21,6 +21,8 @@ class Character(Unit):
         self.attack = 1
         self.protection = 1
         self.tile.symbol = '@'
+       # self.down = True
+       # self.stay = False
 
         self.old_x = 0
         self.old_y = 0
