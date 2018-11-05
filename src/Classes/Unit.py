@@ -1,4 +1,7 @@
 from src.Classes.Object import Object
+from src.Point.Point import Point
+from src.a_star_path_find import PathFinder
+from src.tile_list import *
 
 
 class Unit(Object):
@@ -24,6 +27,8 @@ class Unit(Object):
         self.attack_down = False
         self.attack_right = False
         self.attack_left = False
+        self.path_finder: PathFinder = None
+        self.current_path = []
 
     def death(self):
         self.alive = False
@@ -58,3 +63,9 @@ class Unit(Object):
 
     def set_protection(self, protection):
         self.protection = protection
+
+    def init_path_finder(self, map_body):
+        self.path_finder = PathFinder(map_body)
+
+    def build_path(self, to_x, to_y, forbidden_symb = set(WALL_TILE)):
+        self.current_path = self.path_finder.find_path(Point(self.x, self.y), Point(to_x, to_y), forbidden_symb)
