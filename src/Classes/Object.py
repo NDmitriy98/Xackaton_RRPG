@@ -21,6 +21,9 @@ class Object(sprite.Sprite):
     def move(self, dx, dy):
         self.rect.x += dx
         self.rect.y += dy
+        self.x += dx
+        self.y += dy
+
 
     def set_pos(self, x, y):
         self.rect.x = x
@@ -33,12 +36,15 @@ class Object(sprite.Sprite):
 
     def set_x(self, x):
         self.rect.x = x
+        self.x = x
 
     def get_y(self):
         return self.rect.y
 
     def set_y(self, y):
         self.rect.y = y
+        self.y = y
+
 
     def get_info(self):
         return self.info

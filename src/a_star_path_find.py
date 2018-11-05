@@ -155,7 +155,7 @@ class PathFinder:
             temp_body[p.y][p.x].symbol = 'C'
         self.print_body(temp_body)
 
-    def find_path(self, start : Point, finish : Point):
+    def find_path(self, start : Point, finish : Point, forbidden_symb = set(WALL_TILE)):
         start_cell = Cell(start.x, start.y, True)
         start_cell.g = 0
         start_cell.h = self.lengh_between(start, finish)
@@ -184,7 +184,7 @@ class PathFinder:
             for neighbor in self.neighbors:
                 if neighbor in self.closed:
                     continue
-                if self.body[neighbor.y][neighbor.x].symbol == WALL_TILE:
+                if self.body[neighbor.y][neighbor.x].symbol in forbidden_symb:
                     self.closed.add(neighbor)
                     continue
 
@@ -203,8 +203,6 @@ class PathFinder:
                     neighbor.f = neighbor.h + neighbor.g
                     self.opened.append(neighbor)
 
-
-            #self.print_path()
         return None
 
 
