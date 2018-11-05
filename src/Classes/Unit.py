@@ -115,11 +115,11 @@ class Unit(Object):
             if previous[0] - cell[0] == -1 and previous[1] - cell[1] == 0:
                 self.current_path.append('R')
             if previous[0] - cell[0] == 0 and previous[1] - cell[1] == -1:
-                self.current_path.append('U')
+                self.current_path.append('D')
             if previous[0] - cell[0] == 1 and previous[1] - cell[1] == 0:
                 self.current_path.append('L')
             if previous[0] - cell[0] == 0 and previous[1] - cell[1] == 1:
-                self.current_path.append('D')
+                self.current_path.append('U')
             previous = cell
 
         self.current_path.reverse()
