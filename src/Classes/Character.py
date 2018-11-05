@@ -71,6 +71,7 @@ class Character(Unit):
         self.level = 1
         self.attack = 1
         self.protection = 1
+        self.tile.symbol = '@'
 
         self.old_x = 0
         self.old_y = 0

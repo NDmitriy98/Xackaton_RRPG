@@ -6,12 +6,12 @@ from src.Tile import Tile
 
 
 class Object(sprite.Sprite):
-    def __init__(self, x=0, y=0, img=None, tile = None):
+    def __init__(self, x=0, y=0, img=None):
         super().__init__()
         self.x = x
         self.y = y
         self.img = img
-        self.tile = tile
+        self.tile = Tile("O", False)
         self.info = "Object"
         self.rect = Rect(self.x, self.y, Settings.BLOCK_WIDTH, Settings.BLOCK_HEIGHT)
 
@@ -24,12 +24,14 @@ class Object(sprite.Sprite):
         self.x += dx
         self.y += dy
 
-
     def set_pos(self, x, y):
-        self.rect.x = x
-        self.rect.y = y
         self.x = x
         self.y = y
+
+    def set_rect_pos(self, x, y):
+        self.rect.x = x
+        self.rect.y = y
+
 
     def get_x(self):
         return self.rect.x

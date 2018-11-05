@@ -9,3 +9,4 @@ class Enemy(Unit):
         self.attitude = attitude
         self.drop = drop
         self.visibility = visibility
+        self.tile.symbol = 'E'

@@ -14,12 +14,12 @@ class FOV:
         [1, 0, 0, 1, -1, 0, 0, -1]
     ]
 
-    def __init__(self, map, forbidden_symb = set(WALL_TILE)):
-        self.data = map
+    def __init__(self, map_, forbidden_symb=set(WALL_TILE), radius_ : int = 5):
+        self.data = map_
         self.forbidden_symb = forbidden_symb
-        self.width, self.height = len(map[0]), len(map)
+        self.width, self.height = len(map_[0]), len(map_)
         self.light = []
-        self.radius = 5
+        self.radius = radius_
         for i in range(self.height):
             self.light.append([0] * self.width)
         self.flag = 0
@@ -89,13 +89,28 @@ class FOV:
                              self.mult[2][oct], self.mult[3][oct], 0)
 
 
+    def display(self, X, Y):
+        "Display the map on the given curses screen (utterly unoptimized)"
+        for x in range(self.width):
+            for y in range(self.height):
+                ch = self.square(x, y)
+                if not self.lit(x, y):
+                    ch = ' '
+                if x == X and y == Y:
+                    ch = '@'
+                print(ch, end = '')
+            print()
 
 
+"""
 my_map = Map()
 my_map.generate_map()
+my_map.debug_print_map()
 forb_symb = set(WALL_TILE)
 forb_symb.add(DOOR_TILE)
 (x, y) = my_map.rooms[0].center()
-fov = FOV(deepcopy(my_map.body), forb_symb)
+fov = FOV(deepcopy(my_map.body), forb_symb, 7)
 
 fov.do_fov(x, y)
+fov.display(x, y)
+"""

@@ -24,7 +24,7 @@ class Game:
         self.clock = pg.time.Clock()
         self.images = {}
         self.map = Map()
-        self.game_state: Map
+        self.game_state = deepcopy(self.map)
         self.hero = Character.Character()
         self.inventory = Inventory.Inventory()
         self.enemies = []
@@ -75,9 +75,11 @@ class Game:
         self.load_data()
         self.map.debug_print_map()
         (s_x, s_y) = self.map.rooms[0].center()
-        self.hero.set_pos(s_x * BLOCK_WIDTH, s_y * BLOCK_HEIGHT)
+        self.hero.set_pos(s_x, s_y)
+        self.hero.set_rect_pos(s_x * BLOCK_WIDTH, s_y * BLOCK_HEIGHT)
 
         self.set_enemies()
+        self.update_state()
         self.game_state.debug_print_map()
 
     def load_images(self):
@@ -92,11 +94,17 @@ class Game:
         self.hud_level_background = pg.image.load('Drawable/hud_level.png')
 
         self.map.generate_map()
-        self.game_state = deepcopy(self.map)
 
         total_level_width = len(self.map.body[0]) * BLOCK_WIDTH
         total_level_height = len(self.map.body) * BLOCK_HEIGHT
         self.camera = Camera(total_level_width, total_level_height)
+
+    def update_state(self):
+        self.game_state = deepcopy(self.map)
+        self.game_state.body[self.hero.y][self.hero.x].symbol = self.hero.tile.symbol
+        for enemy in self.enemies:
+            self.game_state.body[enemy.y][enemy.x].symbol = enemy.tile.symbol
+
 
     def run(self):
         self.crashed = False
@@ -375,7 +383,7 @@ class Game:
                     enemy.set_pos(pos_x, pos_y)
                     enemy_count -= 1
                     self.enemies.append(enemy)
-                    self.game_state.body[pos_y][pos_x].symbol = SKELETON_TILE
+        self.update_state()
 
 
 game = Game()
