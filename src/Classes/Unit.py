@@ -33,6 +33,7 @@ class Unit(Object):
         self.path_finder: PathFinder = None
         self.fov: FOV = None
         self.current_path = []
+        self.iterations = 0
 
     def death(self):
         self.alive = False
