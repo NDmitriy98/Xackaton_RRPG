@@ -15,6 +15,8 @@ class Tile:
         if self.check_coords(result.x, result.y):
             display.blit(self.image, (result.x, result.y))
 
+        self.image = None # Избежать ошибки TypeError: can't pickle pygame.Surface objects
+
     def debug_draw(self):
         print(self.symbol, end='')
 
