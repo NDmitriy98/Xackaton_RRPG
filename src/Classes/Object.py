@@ -19,10 +19,12 @@ class Object(sprite.Sprite):
         print ("deling", self)
 
     def move(self, dx, dy):
-        self.rect.x += dx
-        self.rect.y += dy
         self.x += dx
         self.y += dy
+
+    def move_rect(self, dx, dy):
+        self.rect.x += dx
+        self.rect.y += dy
 
     def set_pos(self, x, y):
         self.x = x
@@ -33,20 +35,11 @@ class Object(sprite.Sprite):
         self.rect.y = y
 
 
-    def get_x(self):
+    def get_rect_x(self):
         return self.rect.x
 
-    def set_x(self, x):
-        self.rect.x = x
-        self.x = x
-
-    def get_y(self):
+    def get_rect_y(self):
         return self.rect.y
-
-    def set_y(self, y):
-        self.rect.y = y
-        self.y = y
-
 
     def get_info(self):
         return self.info
