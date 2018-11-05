@@ -311,6 +311,9 @@ class Game:
                         unit.down = True
 
         in_display = self.camera.apply(unit)
+
+     #   unit.rect.x = unit.x * BLOCK_WIDTH
+     #   unit.rect.y = unit.y * BLOCK_HEIGHT
         if WIN_WIDTH >= in_display.x >= 0 and WIN_HEIGHT >= in_display.y >= 0:
             if unit.up and unit.iterations < (BLOCK_HEIGHT / SPEED):
                 unit.move_rect(0, -SPEED)
@@ -321,8 +324,11 @@ class Game:
                     unit.falseStay()
                     unit.falseAttack()
                     unit.falseMove()
+                  #  unit.move(0, -1)
 
                   #  self.update_state()
+                  #  t = self.game_state[unit.y][unit.x].symbol
+                    #self.game_state[unit.y]
                     #self.game_state[unit.y][unit.x].symbol
                     #print(str(self.game_state[block_y][block_x].symbol))
                     unit.up = False
@@ -565,6 +571,7 @@ class Game:
                         pos_y = random.randint(room.y1, room.y2)
 
                     enemy.set_pos(pos_x, pos_y)
+                    enemy.set_rect_pos(pos_x * BLOCK_WIDTH, pos_y * BLOCK_HEIGHT)
                     enemy_count -= 1
                     self.enemies.append(enemy)
         self.update_state()
