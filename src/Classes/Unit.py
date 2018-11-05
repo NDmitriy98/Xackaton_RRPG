@@ -11,6 +11,19 @@ class Unit(Object):
         self.protection = protection
         self.level = level
         self.alive = True
+        self.up = False
+        self.down = False
+        self.right = False
+        self.left = False
+        self.stay = True
+        self.stay_up = True
+        self.stay_down = False
+        self.stay_right = False
+        self.stay_left = False
+        self.attack_up = False
+        self.attack_down = False
+        self.attack_right = False
+        self.attack_left = False
 
     def death(self):
         self.alive = False

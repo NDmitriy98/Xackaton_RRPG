@@ -114,7 +114,7 @@ class Game:
             self.event()
             self.update()
             self.render()
-
+            #print("x, y " + str(self.hero.x) + " " + str(self.hero.y))
             pg.display.update()
             self.clock.tick(30)
 
@@ -174,8 +174,6 @@ class Game:
 
             else:
                 if self.collision(block_x, block_y):
-                    self.hero.animMoveUp.blit(self.display, self.camera.apply(self.hero))
-
 
                     if self.hero.get_rect_y() - pixels_y == 50 and self.hero.get_rect_x() == pixels_x:
                         ############UP MOVE
@@ -245,6 +243,13 @@ class Game:
         self.inventory_render()
         #self.update_state()
 
+    def render_damage(self):
+        damage = self.hero.get_attack()
+        text =self.hero.inventory.font_big.render(" - " + str(damage) + " HP"[0:9], True, (200, 220, 250))
+        print("rect" + str(self.hero.get_rect_x()) + " " + str(self.hero.get_rect_y()))
+        self.display.blit(text, [WIN_WIDTH/2, WIN_HEIGHT/2 - 100 + self.iterations * SPEED])
+
+
     def character_render(self):
         if self.hero.up and self.iterations < (BLOCK_HEIGHT/SPEED):
             self.hero.move_rect(0, -SPEED)
@@ -294,6 +299,7 @@ class Game:
             self.hero.rect = Rect(self.hero.rect.x, self.hero.rect.y, BLOCK_WIDTH, BLOCK_HEIGHT)
             self.hero.animAttackUp.blit(self.display, self.camera.apply(self.hero))
             self.iterations += 1
+            self.render_damage()
             if self.iterations >= (BLOCK_HEIGHT/SPEED):
                 self.hero.attack_up = False
                 self.hero.stay = True
@@ -304,6 +310,7 @@ class Game:
             self.hero.rect = Rect(self.hero.rect.x, self.hero.rect.y, BLOCK_WIDTH, BLOCK_HEIGHT)
             self.hero.animAttackDown.blit(self.display, self.camera.apply(self.hero))
             self.iterations += 1
+            self.render_damage()
             if self.iterations >= (BLOCK_HEIGHT/SPEED):
                 self.hero.attack_down = False
                 self.hero.stay = True
@@ -315,6 +322,7 @@ class Game:
             self.hero.rect = Rect(self.hero.rect.x, self.hero.rect.y, BLOCK_WIDTH, BLOCK_HEIGHT)
             self.hero.animAttackRight.blit(self.display, self.camera.apply(self.hero))
             self.iterations += 1
+            self.render_damage()
             if self.iterations >= (BLOCK_HEIGHT/SPEED):
                 self.hero.attack_right = False
                 self.hero.stay = True
@@ -327,6 +335,7 @@ class Game:
             self.hero.rect = Rect(self.hero.rect.x, self.hero.rect.y, BLOCK_WIDTH, BLOCK_HEIGHT)
             self.hero.animAttackLeft.blit(self.display, self.camera.apply(self.hero))
             self.iterations += 1
+            self.render_damage()
             if self.iterations >= (BLOCK_HEIGHT/SPEED):
                 self.hero.attack_left = False
                 self.hero.stay = True
