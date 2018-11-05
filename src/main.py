@@ -324,6 +324,7 @@ class Game:
                     unit.falseAttack()
                     unit.falseMove()
                     unit.move(0, -1)
+                    self.update_state()
 
                   #  self.update_state()
                   #  t = self.game_state[unit.y][unit.x].symbol
@@ -359,6 +360,7 @@ class Game:
                     unit.iterations = 0
                     #self.update_state()
                     unit.move(0, 1)
+                    self.update_state()
                     if unit == self.hero:
                         self.step = True
 
@@ -377,6 +379,7 @@ class Game:
                     unit.iterations = 0
                    # self.update_state()
                     unit.move(1, 0)
+                    self.update_state()
                     if unit == self.hero:
                         self.step = True
 
@@ -395,6 +398,7 @@ class Game:
                     unit.iterations = 0
                    # self.update_state()
                     unit.move(-1, 0)
+                    self.update_state()
                     if unit == self.hero:
                         self.step = True
 
@@ -457,6 +461,8 @@ class Game:
                     unit.animStayLeft.blit(self.display, self.camera.apply(unit))
                 if unit == self.hero:
                     self.step = True
+
+
 
     def inventory_render(self):
         if self.hero.inventory.opened:
@@ -569,7 +575,6 @@ class Game:
                     enemy.set_rect_pos(pos_x * BLOCK_WIDTH, pos_y * BLOCK_HEIGHT)
                     enemy_count -= 1
                     self.enemies.append(enemy)
-        self.update_state()
 
 
 game = Game()
