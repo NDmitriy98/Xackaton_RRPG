@@ -1,6 +1,7 @@
 import random
 
 from src import pyganim
+from src.Tile import Tile
 from src.Settings import *
 from src.Camera import Camera
 from src.Classes import *
@@ -103,8 +104,19 @@ class Game:
         total_level_height = len(self.game_map.body) * BLOCK_HEIGHT
         self.camera = Camera(total_level_width, total_level_height)
 
+    def copy_state(self):
+        copy = []
+        for y, row in enumerate(self.game_map.body):
+            copy.append([])
+            for x, col in enumerate(row):
+                copy[y].append(Tile(self.game_map.body[y][x].symbol, self.game_map.body[y][x].visible))
+
+        return copy
+
+
     def update_state(self):
-        self.game_state = deepcopy(self.game_map.body)
+        #self.game_state = deepcopy(self.game_map.body)
+        self.game_state = self.copy_state()
         self.game_state[int(self.hero.y)][int(self.hero.x)].symbol = self.hero.tile.symbol
         for enemy in self.enemies:
             self.game_state[enemy.y][enemy.x].symbol = enemy.tile.symbol
@@ -276,7 +288,7 @@ class Game:
     def unit_render(self, unit):
 
         if unit != self.hero and unit.npc_step:
-            if unit.current_path:
+            if unit.current_path and len(unit.current_path) != 0:
                 if unit.stay == True:
                     k = unit.current_path.pop()
                     unit.npc_step = False
