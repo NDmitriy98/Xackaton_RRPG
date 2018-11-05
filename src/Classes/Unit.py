@@ -1,3 +1,4 @@
+from src import pyganim
 from src.Classes.Object import Object
 from src.Point.Point import Point
 from src.a_star_path_find import PathFinder
@@ -33,6 +34,13 @@ class Unit(Object):
     def death(self):
         self.alive = False
 
+    def makeAnim(self, animList, delay):
+        boltAnim = []
+        for anim in animList:
+            boltAnim.append((anim, delay))
+        Anim = pyganim.PygAnimation(boltAnim)
+        return Anim
+
     def in_damage(self, incoming_damage):  # Входящий урон
         clean_damage = incoming_damage / ((10 + self.protection) / 10)
         self.hp -= clean_damage
@@ -63,6 +71,28 @@ class Unit(Object):
 
     def set_protection(self, protection):
         self.protection = protection
+
+
+
+
+    def falseStay(self):
+        self.stay = False
+        self.stay_up = False
+        self.stay_down = False
+        self.stay_right = False
+        self.stay_left = False
+
+    def falseMove(self):
+        self.up = False
+        self.down = False
+        self.right = False
+        self.left = False
+
+    def falseAttack(self):
+        self.attack_up = False
+        self.attack_down = False
+        self.attack_right = False
+        self.attack_left = False
 
     def init_path_finder(self, map_body):
         self.path_finder = PathFinder(map_body)
