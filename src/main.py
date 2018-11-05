@@ -193,8 +193,8 @@ class Game:
 
             else:
                 if self.collision(block_x, block_y):
-                    self.hero.init_path_finder(self.game_state)
-                    self.hero.build_path(block_x, block_y)
+                    #self.hero.init_path_finder(self.game_state)
+                    #self.hero.build_path(block_x, block_y)
 
 
                     if self.hero.get_rect_y() - pixels_y == 50 and self.hero.get_rect_x() == pixels_x:
@@ -285,9 +285,9 @@ class Game:
     def unit_render(self, unit):
 
         if unit != self.hero and unit.npc_step:
-            if unit.movement:
+            if unit.current_path:
                 if unit.stay == True:
-                    k = unit.movement.pop()
+                    k = unit.current_path.pop()
                     unit.npc_step = False
                     if k == "L":
                         print("L")
@@ -309,12 +309,18 @@ class Game:
                         unit.falseStay()
                         unit.falseAttack()
                         unit.down = True
+            else:
+                rand_room = random.randint(0, self.game_map.roomCount - 1)
+                rand_point = self.game_map.rooms[rand_room].center()
+                unit.init_path_finder(self.game_state)
+                unit.build_path(rand_point[0], rand_point[1])
 
         in_display = self.camera.apply(unit)
 
      #   unit.rect.x = unit.x * BLOCK_WIDTH
      #   unit.rect.y = unit.y * BLOCK_HEIGHT
         if WIN_WIDTH >= in_display.x >= 0 and WIN_HEIGHT >= in_display.y >= 0:
+            pos_changed = False
             if unit.up and unit.iterations < (BLOCK_HEIGHT // SPEED):
                 unit.move_rect(0, -SPEED)
                 unit.animMoveUp.blit(self.display, self.camera.apply(unit))
@@ -324,7 +330,8 @@ class Game:
                     unit.falseAttack()
                     unit.falseMove()
                     unit.move(0, -1)
-                    self.update_state()
+                    #self.update_state()
+                    pos_changed = True
 
                   #  self.update_state()
                   #  t = self.game_state[unit.y][unit.x].symbol
@@ -360,7 +367,8 @@ class Game:
                     unit.iterations = 0
                     #self.update_state()
                     unit.move(0, 1)
-                    self.update_state()
+                    #self.update_state()
+                    pos_changed = True
                     if unit == self.hero:
                         self.step = True
 
@@ -377,9 +385,10 @@ class Game:
                     unit.stay = True
                     unit.stay_right = True
                     unit.iterations = 0
-                   # self.update_state()
                     unit.move(1, 0)
-                    self.update_state()
+                   # self.update_state()
+                    pos_changed = True
+
                     if unit == self.hero:
                         self.step = True
 
@@ -398,7 +407,8 @@ class Game:
                     unit.iterations = 0
                    # self.update_state()
                     unit.move(-1, 0)
-                    self.update_state()
+                    #self.update_state()
+                    pos_changed = True
                     if unit == self.hero:
                         self.step = True
 
@@ -461,6 +471,8 @@ class Game:
                     unit.animStayLeft.blit(self.display, self.camera.apply(unit))
                 if unit == self.hero:
                     self.step = True
+            if pos_changed:
+                self.update_state()
 
 
 

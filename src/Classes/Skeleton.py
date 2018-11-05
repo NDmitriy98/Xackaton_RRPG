@@ -14,11 +14,12 @@ class Skeleton(Enemy):
         self.tile = Tile(SKELETON_TILE, True)
         #self.down = True
        #self.stay = False
-        self.movement = ["L", "U", "R", "D","L", "U", "R", "D","L", "U", "R", "D","L", "U", "R", "D",
+        self.current_path = []
+        """["L", "U", "R", "D","L", "U", "R", "D", "L", "U", "R", "D","L", "U", "R", "D",
                          "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "D",
                          "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "D",
-                         "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "R."]
-
+                         "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "R"]
+"""
 
 
         self.animStayUp = self.makeAnim(ANIMATION_STAY_UP, ANIMATION_DELAY)

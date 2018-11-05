@@ -107,7 +107,29 @@ class Unit(Object):
     def init_path_finder(self, map_body):
         self.path_finder = PathFinder(map_body)
 
+    def convert_path_to_letters(self, path):
+        temp_path = path
+        temp_path.reverse()
+        previous = temp_path[0]
+        for cell in temp_path[1:]:
+            if previous[0] - cell[0] == -1 and previous[1] - cell[1] == 0:
+                self.current_path.append('R')
+            if previous[0] - cell[0] == 0 and previous[1] - cell[1] == -1:
+                self.current_path.append('U')
+            if previous[0] - cell[0] == 1 and previous[1] - cell[1] == 0:
+                self.current_path.append('L')
+            if previous[0] - cell[0] == 0 and previous[1] - cell[1] == 1:
+                self.current_path.append('D')
+            previous = cell
+
+        self.current_path.reverse()
+
+
     def build_path(self, to_x, to_y, forbidden_symb=None):
         if forbidden_symb is None:
             forbidden_symb = {WALL_TILE}
-        self.current_path = self.path_finder.find_path(Point(self.x, self.y), Point(to_x, to_y), forbidden_symb)
+        temp_path = self.path_finder.find_path(Point(self.x, self.y), Point(to_x, to_y), forbidden_symb)
+        if not temp_path:
+            temp_path = self.path_finder.find_path(Point(self.x, self.y), Point(to_x+1, to_y), forbidden_symb)
+        self.convert_path_to_letters(temp_path)
+
