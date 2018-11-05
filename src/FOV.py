@@ -14,9 +14,9 @@ class FOV:
         [1, 0, 0, 1, -1, 0, 0, -1]
     ]
 
-    def __init__(self, map_, forbidden_symb=set(WALL_TILE), radius_ : int = 5):
+    def __init__(self, map_, forbidden_symb=None, radius_ : int = 5):
         self.data = map_
-        self.forbidden_symb = forbidden_symb
+        self.forbidden_symb = forbidden_symb if forbidden_symb is not None else {WALL_TILE, DOOR_TILE}
         self.width, self.height = len(map_[0]), len(map_)
         self.light = []
         self.radius = radius_
