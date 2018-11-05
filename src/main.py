@@ -291,7 +291,6 @@ class Game:
                 if unit.iterations >= (BLOCK_HEIGHT // SPEED):
                     unit.falseAll()
                     unit.move(0, -1)
-                    self.update_state()
                     pos_changed = True
                     unit.up = False
                     unit.stay = True
@@ -495,7 +494,6 @@ class Game:
                     enemy.set_rect_pos(pos_x * BLOCK_WIDTH, pos_y * BLOCK_HEIGHT)
                     enemy_count -= 1
                     self.enemies.append(enemy)
-        self.update_state()
 
 
 game = Game()
