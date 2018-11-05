@@ -21,6 +21,15 @@ class Dwarf(Enemy):
                          "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "D", "L", "U", "R", "R"]
 """
 
+        helm = Item
+        helm.img = pg.image.load('Drawable/start_armor.png')
+        helm.info = "Каска гнома"
+        helm.description = "Можно переплавить"
+        helm.cost = 30
+
+        self.drop = helm
+
+
 
         self.animStayUp = self.makeAnim(ANIMATION_STAY_UP, ANIMATION_DELAY)
         self.animStayUp.play()
