@@ -16,6 +16,7 @@ class Unit(Object):
         self.protection = protection
         self.level = level
         self.alive = True
+        self.view_range = 5
         self.up = False
         self.down = False
         self.right = False
@@ -96,8 +97,16 @@ class Unit(Object):
         self.attack_right = False
         self.attack_left = False
 
+    def init_fov(self, map_body):
+        self.fov = FOV(map_body, radius_=self.view_range)
+
+    def view(self):
+        self.fov.do_fov(self.x, self.y)
+
     def init_path_finder(self, map_body):
         self.path_finder = PathFinder(map_body)
 
-    def build_path(self, to_x, to_y, forbidden_symb = set(WALL_TILE)):
+    def build_path(self, to_x, to_y, forbidden_symb=None):
+        if forbidden_symb is None:
+            forbidden_symb = {WALL_TILE}
         self.current_path = self.path_finder.find_path(Point(self.x, self.y), Point(to_x, to_y), forbidden_symb)
