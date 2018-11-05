@@ -434,7 +434,9 @@ class Game:
     def enemy_render(self):
         #self.display.blit(self.hero.img, self.camera.apply(self.hero))
         for enemy in self.enemies:
-            enemy.tile.draw(enemy.x * BLOCK_WIDTH, enemy.y * BLOCK_HEIGHT, self.display, self.camera, self.images)
+            enemy.set_rect_pos(enemy.x * BLOCK_WIDTH, enemy.y * BLOCK_HEIGHT)
+            self.unit_render(enemy)
+            #enemy.tile.draw(enemy.x * BLOCK_WIDTH, enemy.y * BLOCK_HEIGHT, self.display, self.camera, self.images)
 
     def set_enemies(self):
         enemy_count = random.randint(MIN_ENEMY_COUNT, MAX_ENEMY_COUNT)
