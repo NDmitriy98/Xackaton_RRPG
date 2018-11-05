@@ -23,8 +23,8 @@ class Game:
         pg.display.set_caption('RRPG ' + GAME_VERSION)
         self.clock = pg.time.Clock()
         self.images = {}
-        self.map = Map()
-        self.game_state = deepcopy(self.map.body)
+        self.game_map = Map()
+        self.game_state = deepcopy(self.game_map.body)
         self.hero = Character.Character()
         self.inventory = Inventory.Inventory()
         self.enemies = []
@@ -73,8 +73,8 @@ class Game:
         # self.floor = Object.Object()
 
         self.load_data()
-        self.map.debug_print_map()
-        (s_x, s_y) = self.map.rooms[0].center()
+        self.game_map.debug_print_map()
+        (s_x, s_y) = self.game_map.rooms[0].center()
         self.hero.set_pos(s_x, s_y)
         self.hero.set_rect_pos(s_x * BLOCK_WIDTH, s_y * BLOCK_HEIGHT)
 
@@ -93,14 +93,14 @@ class Game:
         self.hud_background = pg.image.load('Drawable/hud.png')
         self.hud_level_background = pg.image.load('Drawable/hud_level.png')
 
-        self.map.generate_map()
+        self.game_map.generate_map()
 
-        total_level_width = len(self.map.body[0]) * BLOCK_WIDTH
-        total_level_height = len(self.map.body) * BLOCK_HEIGHT
+        total_level_width = len(self.game_map.body[0]) * BLOCK_WIDTH
+        total_level_height = len(self.game_map.body) * BLOCK_HEIGHT
         self.camera = Camera(total_level_width, total_level_height)
 
     def update_state(self):
-        self.game_state = deepcopy(self.map.body)
+        self.game_state = deepcopy(self.game_map.body)
         self.game_state[self.hero.y][self.hero.x].symbol = self.hero.tile.symbol
         for enemy in self.enemies:
             self.game_state[enemy.y][enemy.x].symbol = enemy.tile.symbol
@@ -154,6 +154,12 @@ class Game:
                         #self.print_damage(block_x, block_y, damage)
                         if not enemy.alive:
                             self.enemies.remove(enemy)
+                            try:
+                                self.update_state()
+                            except Exception as msg:
+                                print(msg)
+
+
 
                         if self.hero.get_rect_y() - pixels_y == 50 and self.hero.get_rect_x() == pixels_x:
                             ############UP ATTACK
@@ -225,14 +231,14 @@ class Game:
         return False
 
     def collision(self, block_x, block_y):
-        if len(self.map.body[0]) > block_x >= 0 and len(self.map.body) > block_y >= 0:
-            if self.map.body[block_y][block_x].symbol != WALL_TILE and \
-                    self.map.body[block_y][block_x].symbol != BACK_TILE:
+        if len(self.game_map.body[0]) > block_x >= 0 and len(self.game_map.body) > block_y >= 0:
+            if self.game_map.body[block_y][block_x].symbol != WALL_TILE and \
+                    self.game_map.body[block_y][block_x].symbol != BACK_TILE:
 
-                if self.map.body[block_y][block_x].symbol == DOOR_TILE:
-                    self.map.body[block_y][block_x].symbol = OPEN_DOOR_TILE
-                elif self.map.body[block_y][block_x].symbol == OPEN_DOOR_TILE:
-                    self.map.body[block_y][block_x].symbol = DOOR_TILE
+                if self.game_map.body[block_y][block_x].symbol == DOOR_TILE:
+                    self.game_map.body[block_y][block_x].symbol = OPEN_DOOR_TILE
+                elif self.game_map.body[block_y][block_x].symbol == OPEN_DOOR_TILE:
+                    self.game_map.body[block_y][block_x].symbol = DOOR_TILE
 
                 return True
         return False
@@ -434,7 +440,7 @@ class Game:
     def map_render(self):
 
         # self.map.debug_print_map()
-        self.map.print_map(self.display, self.camera, self.images)
+        self.game_map.print_map(self.display, self.camera, self.images)
 
         self.camera.coefficient_x = self.camera.apply(Block(0, 0)).x  # Отклонения для x,y
         self.camera.coefficient_y = self.camera.apply(Block(0, 0)).y
@@ -448,7 +454,7 @@ class Game:
     def set_enemies(self):
         enemy_count = random.randint(MIN_ENEMY_COUNT, MAX_ENEMY_COUNT)
 
-        for room in self.map.rooms[1:]:
+        for room in self.game_map.rooms[1:]:
             if enemy_count == 0:
                 break
             else:
@@ -457,7 +463,7 @@ class Game:
                     enemy = Skeleton.Skeleton()
                     pos_x = random.randint(room.x1, room.x2)
                     pos_y = random.randint(room.y1, room.y2)
-                    while self.map.body[pos_y][pos_x].symbol != FLOOR_TILE and \
+                    while self.game_map.body[pos_y][pos_x].symbol != FLOOR_TILE and \
                             self.game_state[pos_y][pos_x].symbol != FLOOR_TILE:
                         pos_x = random.randint(room.x1, room.x2)
                         pos_y = random.randint(room.y1, room.y2)
