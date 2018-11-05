@@ -6,5 +6,5 @@ drawable = {
     BACK_TILE : 'Drawable/back.png',
     DOOR_TILE : 'Drawable/door.png',
     OPEN_DOOR_TILE : 'Drawable/open_door.png',
-    SKELETON_TILE : 'Drawable/skeleton.png'
+    DWARF_TILE : 'Drawable/skeleton.png'
 }

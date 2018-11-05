@@ -98,6 +98,11 @@ class Unit(Object):
         self.attack_right = False
         self.attack_left = False
 
+    def falseAll(self):
+        self.falseStay()
+        self.falseMove()
+        self.falseAttack()
+
     def init_fov(self, map_body):
         self.fov = FOV(map_body, radius_=self.view_range)
 
