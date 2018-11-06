@@ -27,5 +27,7 @@ class Enemy(Unit):
         near = self.get_destination(hero_x, hero_y)
         if near:
             self.set_attack_direction(hero_x, hero_y)
+        else:
+            self.armed = False
         return near
 
