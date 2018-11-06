@@ -132,6 +132,15 @@ class Game:
 
         return copy
 
+    def hero_view(self):
+        self.hero.view()
+        for y, row in enumerate(self.game_map.body):
+            for x, col in enumerate(row):
+                if self.hero.fov.lit(x, y):
+                    self.game_map.body[y][x].visible = True
+                    self.game_map.body[y][x].explored = True
+                else:
+                    self.game_map.body[y][x].visible = False
 
     def update_state(self):
         #self.game_state = deepcopy(self.game_map.body)
@@ -141,6 +150,8 @@ class Game:
             self.game_state[enemy.y][enemy.x].symbol = enemy.tile.symbol
 
         self.hero.init_path_finder(self.game_state)
+        self.hero.init_fov(self.game_state)
+        self.hero_view()
         for enemy in self.enemies:
             enemy.init_path_finder(self.game_state)
 
@@ -537,7 +548,9 @@ class Game:
 
     def enemy_render(self):
         for enemy in self.enemies:
-            self.unit_render(enemy)
+            if self.game_map.body[enemy.y][enemy.x].visible is True:
+                self.unit_render(enemy)
+
 
     def set_enemies(self):
         enemy_count = random.randint(MIN_ENEMY_COUNT, MAX_ENEMY_COUNT)
