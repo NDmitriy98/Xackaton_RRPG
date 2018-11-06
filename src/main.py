@@ -646,8 +646,6 @@ class Game:
         for enemy in self.enemies:
             if self.game_map.body[enemy.y][enemy.x].visible is True:
                 self.unit_render(enemy)
-            else:
-                self.unit_take_move(enemy)
 
 
 
