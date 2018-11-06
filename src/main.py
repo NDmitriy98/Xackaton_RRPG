@@ -37,6 +37,7 @@ class Game:
         self.menu_background = pg.image.load('Drawable/menu_background.png')
         self.menu_background_start = pg.image.load('Drawable/start_button.png')
         self.menu_background_exit = pg.image.load('Drawable/exit_button.png')
+        self.menu_game_over = pg.image.load('Drawable/game_over.png')
         pg.mixer_music.load('sound/background.wav')
         pg.mixer_music.play(-1)
 
@@ -69,7 +70,7 @@ class Game:
         heal_poition = Potion.Potion
         heal_poition.img = pg.image.load('Drawable/heal.png')
         heal_poition.info = "Зелье опыта"
-        heal_poition.description = "+100 опыта"
+        heal_poition.description = "+50 опыта"
         heal_poition.cost = 15
 
         self.hero.inventory.add_item(heal_poition)
@@ -167,7 +168,8 @@ class Game:
 
             pg.display.update()
             self.clock.tick(30)
-
+            if not self.hero.alive:
+                self.render_death()
         pg.quit()
         quit()
 
@@ -185,7 +187,8 @@ class Game:
         # if res == 0:
         #    print("NO RES")
         if res == 1:
-            self.hero.add_experience(500)
+            self.hero.add_experience(50)
+            #self.hero.in_damage(100)
 
     def move_event(self, event):
         if event.type == pg.MOUSEBUTTONDOWN:
@@ -246,6 +249,32 @@ class Game:
                             self.hero.falseAll()
                             self.hero.left = True
 
+
+
+    def render_death(self):
+        self.restart = False
+        while not self.restart:
+            self.display.blit(self.menu_game_over, (200, 100))
+            self.death_event()
+
+            pg.display.update()
+            self.clock.tick(30)
+        if self.restart and not self.crashed:
+            self.images = {}
+            self.game_map = Map()
+            self.game_state = deepcopy(self.game_map.body)
+
+            self.hero = Character.Character()
+            self.inventory = Inventory.Inventory()
+
+            self.enemies = []
+            self.step = True
+            self.npc_step = False
+            self.steps = 0
+
+            game.new()
+
+
     def event_keys(self, event):
         if event.type == pg.QUIT:
             self.crashed = True
@@ -279,6 +308,16 @@ class Game:
                 return True
         return False
 
+    def death_event(self):
+        for event in pg.event.get():
+            if event.type == pg.MOUSEBUTTONDOWN:
+                mouse_position = pg.mouse.get_pos()
+                if 470 > mouse_position[0] > 258 and 460 > mouse_position[1] > 385:
+                    self.restart = True
+                if 744 > mouse_position[0] > 525 and 460 > mouse_position[1] > 385:
+                    self.restart = True
+                    self.crashed = True
+
     def menu_event(self):
         for event in pg.event.get():
             if event.type == pg.MOUSEBUTTONDOWN:
@@ -293,6 +332,7 @@ class Game:
         for enemy in self.enemies:
             enemy.npc_step = True
 
+    _step = True
     def update(self):
         self.camera.update(self.hero)
 
