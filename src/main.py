@@ -345,8 +345,8 @@ class Game:
         self.hud_render()
         self.inventory_render()
 
-    def render_damage(self):
-        damage = self.hero.get_attack()
+    def render_damage(self, unit):
+        damage = unit.get_attack()
         text = self.hero.inventory.font_big.render(" - " + str(damage) + " HP"[0:9], True, (200, 220, 250))
         self.display.blit(text, [WIN_WIDTH / 2, WIN_HEIGHT / 2 - 100 + self.hero.iterations * SPEED])
 
@@ -438,7 +438,7 @@ class Game:
             if unit.attack_up and unit.iterations < (BLOCK_HEIGHT / SPEED):
                 unit.animAttackUp.blit(self.display, self.camera.apply(unit))
                 unit.iterations += 1
-                self.render_damage()
+                self.render_damage(unit)
                 if unit.iterations >= (BLOCK_HEIGHT / SPEED):
                     unit.falseAll()
                     unit.stay = True
@@ -448,7 +448,7 @@ class Game:
             if unit.attack_down and unit.iterations < (BLOCK_HEIGHT / SPEED):
                 unit.animAttackDown.blit(self.display, self.camera.apply(unit))
                 unit.iterations += 1
-                self.render_damage()
+                self.render_damage(unit)
                 if unit.iterations >= (BLOCK_HEIGHT / SPEED):
                     unit.falseAll()
                     unit.stay = True
@@ -458,7 +458,7 @@ class Game:
             if unit.attack_right and unit.iterations < (BLOCK_HEIGHT / SPEED):
                 unit.animAttackRight.blit(self.display, self.camera.apply(unit))
                 unit.iterations += 1
-                self.render_damage()
+                self.render_damage(unit)
                 if unit.iterations >= (BLOCK_HEIGHT / SPEED):
                     unit.falseAll()
                     unit.stay = True
@@ -468,7 +468,7 @@ class Game:
             if unit.attack_left and unit.iterations < (BLOCK_HEIGHT / SPEED):
                 unit.animAttackLeft.blit(self.display, self.camera.apply(unit))
                 unit.iterations += 1
-                self.render_damage()
+                self.render_damage(unit)
                 if unit.iterations >= (BLOCK_HEIGHT / SPEED):
                     unit.falseAll()
                     unit.stay = True
@@ -495,7 +495,7 @@ class Game:
                     self.hero.inventory.font_big.render(str(self.hero.get_protection())[0:6], True, (200, 220, 180)),
                     self.hero.inventory.font_big.render(str(self.hero.info)[0:9], True, (200, 220, 180)),
                     self.hero.inventory.font_big.render(str(self.hero.level)[0:4], True, (200, 220, 180)),
-                    self.hero.inventory.font_default.render((str(self.hero.hp)) + "/" + str(self.hero.get_hp())[0:10],
+                    self.hero.inventory.font_default.render((str(self.hero.hp))[:4] + "/" + str(self.hero.get_max_hp()),
                                                             True, (200, 220, 180)),
                     self.hero.inventory.font_default.render(str(len(self.hero.inventory.item_list)) + "/24"[0:6], True,
                                                             (200, 220, 180))]

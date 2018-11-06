@@ -104,6 +104,26 @@ class Unit(Object):
             self.falseAll()
             self.attack_left = True
 
+        if self.y - target_y == 1 and self.x - target_x == 1:
+            ############LEFT ATTACK
+            self.falseAll()
+            self.attack_left = True
+
+        if self.y - target_y == -1 and self.x - target_x == 1:
+            ############LEFT ATTACK
+            self.falseAll()
+            self.attack_left = True
+
+        if self.y - target_y == 1 and self.x - target_x == -1:
+            ############LEFT ATTACK
+            self.falseAll()
+            self.attack_right = True
+
+        if self.y - target_y == -1 and self.x - target_x == -1:
+            ############LEFT ATTACK
+            self.falseAll()
+            self.attack_right = True
+
 
     def falseStay(self):
         self.stay = False
@@ -141,6 +161,7 @@ class Unit(Object):
     def convert_path_to_letters(self, path):
         temp_path = path
         temp_path.reverse()
+        temp_path = temp_path[:-1]
         previous = temp_path[0]
         for cell in temp_path[1:]:
             if previous[0] - cell[0] == -1 and previous[1] - cell[1] == 0:
@@ -161,6 +182,7 @@ class Unit(Object):
         if forbidden_symb is None:
             forbidden_symb = {WALL_TILE}
         temp_path = self.path_finder.find_path(Point(self.x, self.y), Point(to_x, to_y), forbidden_symb)
+
         if not temp_path:
             temp_path = self.path_finder.find_path(Point(self.x, self.y), Point(to_x+1, to_y), forbidden_symb)
         self.convert_path_to_letters(temp_path)
