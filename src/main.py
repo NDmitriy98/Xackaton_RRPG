@@ -38,7 +38,7 @@ class Game:
         self.menu_background_start = pg.image.load('Drawable/start_button.png')
         self.menu_background_exit = pg.image.load('Drawable/exit_button.png')
         pg.mixer_music.load('sound/background.wav')
-        pg.mixer_music.play()
+        pg.mixer_music.play(-1)
 
     def new(self):  # Начало новой игры
 
@@ -510,7 +510,7 @@ class Game:
         pg.draw.rect(self.display, (200, 200, 200), (70, 604, exp * 196, 11))
 
         text = [self.hero.inventory.font_ultra_big.render(str(self.hero.level)[0:3], True, (200, 200, 200)),
-                self.hero.inventory.font_big.render(str(self.hero.hp) + "/" + str(self.hero.get_max_hp())[0:8], True,
+                self.hero.inventory.font_big.render(str(self.hero.hp)[0:4] + "/" + str(self.hero.get_max_hp()), True,
                                                     (200, 220, 180)),
                 self.hero.inventory.font_big.render(str(self.hero.mp) + "/" + str(self.hero.get_max_mp())[0:8], True,
                                                     (200, 200, 200)),
