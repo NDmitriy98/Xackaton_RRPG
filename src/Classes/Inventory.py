@@ -40,6 +40,8 @@ class Inventory:
                         item = self.item_list[self.item_num]
                         if item.info == "Зелье опыта":
                             result = 1
+                        if item.info == "Зелье лечения":
+                            result = 2
                         if use:
                             if use.class_name == "Weapon":
                                 if self.weapon:

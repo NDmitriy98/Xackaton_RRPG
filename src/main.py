@@ -68,17 +68,18 @@ class Game:
         self.hero.inventory.add_item(armor2)
 
         heal_poition = Potion.Potion
-        heal_poition.img = pg.image.load('Drawable/heal.png')
-        heal_poition.info = "Зелье опыта"
-        heal_poition.description = "+50 опыта"
+        heal_poition.img = pg.image.load('Drawable/heal_poit.png')
+        heal_poition.info = "Зелье лечения"
+        heal_poition.description = "+20 HP"
         heal_poition.cost = 15
+
+
 
         self.hero.inventory.add_item(heal_poition)
         self.hero.inventory.add_item(heal_poition)
         self.hero.inventory.add_item(heal_poition)
         self.hero.inventory.add_item(heal_poition)
-        self.hero.inventory.add_item(heal_poition)
-        self.hero.inventory.add_item(heal_poition)
+
 
         self.load_data()
         self.game_map.debug_print_map()
@@ -186,6 +187,10 @@ class Game:
         #    print("NO RES")
         if res == 1:
             self.hero.add_experience(50)
+        if res == 2:
+            self.hero.hp += 20
+            if self.hero.hp > self.hero.get_max_hp():
+                self.hero.hp = self.hero.get_max_hp()
             # self.hero.in_damage(100)
 
     def move_event(self, event):
