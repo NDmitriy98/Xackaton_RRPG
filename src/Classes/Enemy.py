@@ -17,11 +17,15 @@ class Enemy(Unit):
         self.fov.do_fov(self.x, self.y)
         is_hero, pos = self.fov.find_in_fov('@')
         if is_hero:
-            self.build_path(pos[0], pos[1])
             self.armed = True
+            if not self.hero_is_near(pos[0], pos[1]):
+                self.build_path(pos[0], pos[1])
         else:
             self.armed = False
 
     def hero_is_near(self, hero_x, hero_y):
-        return self.get_destination(hero_x, hero_y)
+        near = self.get_destination(hero_x, hero_y)
+        if near:
+            self.set_attack_direction(hero_x, hero_y)
+        return near
 
