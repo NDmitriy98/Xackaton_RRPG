@@ -207,8 +207,8 @@ class Game:
             print("tile " + str(self.game_state[block_y][block_x].symbol))
 
             if (WIN_WIDTH / 2 + 125) > mouse_position[0] > (WIN_WIDTH / 2 - 125) and 70 > mouse_position[1] > 30:
-                self.npc_start()
                 self.update_state()
+                self.npc_start()
 
             if self.hero.get_destination(block_x, block_y):
                 if self.check_npc(block_x, block_y):
@@ -318,10 +318,57 @@ class Game:
         text = self.hero.inventory.font_big.render(" - " + str(damage) + " HP"[0:9], True, (200, 220, 250))
         self.display.blit(text, [WIN_WIDTH / 2, WIN_HEIGHT / 2 - 100 + unit.iterations * SPEED])
 
+    def unit_take_move(self, unit):
+        if unit.current_path and len(unit.current_path) != 0:
+            if unit.stay == True and unit.npc_step:
+                k = unit.current_path.pop()
+                unit.npc_step = False
+                if k == "L":
+                    unit.falseAll()
+                    unit.move(-1, 0)
+                    unit.stay = True
+                    unit.stay_left = True
+                    unit.iterations = 0
+                    pos_changed = True
+                if k == "R":
+                    unit.right = True
+                    unit.falseAll()
+                    unit.move(1, 0)
+                    unit.stay = True
+                    unit.stay_right = True
+                    unit.iterations = 0
+                    pos_changed = True
+                if k == "U":
+                    unit.falseAll()
+                    unit.move(0, -1)
+                    pos_changed = True
+                    unit.up = False
+                    unit.stay = True
+                    unit.stay_up = True
+                    unit.iterations = 0
+                if k == "D":
+                    unit.falseAll()
+                    unit.move(0, 1)
+                    unit.stay = True
+                    unit.stay_down = True
+                    unit.iterations = 0
+                    pos_changed = True
+                unit.falseStay()
+                unit.falseAttack()
+                self.update_state()
+        else:
+            rand_room = random.randint(0, self.game_map.roomCount - 1)
+            rand_point = self.game_map.rooms[rand_room].center()
+            unit.init_path_finder(self.game_state)
+            unit.build_path(rand_point[0], rand_point[1])
+
+
     def unit_render(self, unit):
 
         if unit != self.hero and unit.npc_step:
             if not unit.armed:
+                #self.unit_take_move(unit)
+
                 if unit.current_path and len(unit.current_path) != 0:
                     if unit.stay == True:
                         k = unit.current_path.pop()
@@ -341,12 +388,14 @@ class Game:
                     rand_point = self.game_map.rooms[rand_room].center()
                     unit.init_path_finder(self.game_state)
                     unit.build_path(rand_point[0], rand_point[1])
+
             else:
                 unit.npc_step = False
                 unit.falseAttack()
                 attacked = True
                 damage = unit.get_attack()
                 self.hero.in_damage(damage)
+                unit.armed = False
                 print('{0} attacked'.format(unit.info))
 
 
@@ -557,6 +606,9 @@ class Game:
         for enemy in self.enemies:
             if self.game_map.body[enemy.y][enemy.x].visible is True:
                 self.unit_render(enemy)
+            else:
+                self.unit_take_move(enemy)
+
 
 
     def set_enemies(self):
