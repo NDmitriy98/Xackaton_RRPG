@@ -87,7 +87,6 @@ class Game:
 
         self.set_enemies()
         self.update_state()
-        # self.game_state.debug_print_map()
 
     def menu(self):
         while self.menu_show:
@@ -143,7 +142,6 @@ class Game:
                     self.game_map.body[y][x].visible = False
 
     def update_state(self):
-        #self.game_state = deepcopy(self.game_map.body)
         self.game_state = self.copy_state()
         self.game_state[int(self.hero.y)][int(self.hero.x)].symbol = self.hero.tile.symbol
         for enemy in self.enemies:
@@ -152,8 +150,11 @@ class Game:
         self.hero.init_path_finder(self.game_state)
         self.hero.init_fov(self.game_state)
         self.hero_view()
+
         for enemy in self.enemies:
             enemy.init_path_finder(self.game_state)
+            enemy.init_fov(self.game_state)
+            enemy.look_for_hero()
 
         # self.game_state.debug_print_map()
 
@@ -218,30 +219,12 @@ class Game:
                                 except Exception as msg:
                                     print(msg)
 
-                            if self.hero.y - block_y == 1 and self.hero.x == block_x:
-                                ############UP ATTACK
-                                self.hero.falseAll()
-                                self.hero.attack_up = True
-
-                            if self.hero.y - block_y == -1 and self.hero.x == block_x:
-                                ############DOWN ATTACK
-                                self.hero.falseAll()
-                                self.hero.attack_down = True
-
-                            if self.hero.y == block_y and self.hero.x - block_x == -1:
-                                ############RIGHT ATTACK
-                                self.hero.falseAll()
-                                self.hero.attack_right = True
-
-                            if self.hero.y == block_y and self.hero.x - block_x == 1:
-                                ############LEFT ATTACK
-                                self.hero.falseAll()
-                                self.hero.attack_left = True
+                            self.hero.set_attack_direction(block_x, block_y)
 
                 else:
                     if self.collision(block_x, block_y):
                         self.hero.init_path_finder(self.game_state)
-                        self.hero.build_path(block_x, block_y)
+                        #self.hero.build_path(block_x, block_y)
                         self.npc_start()
                         if self.hero.y - block_y == 1 and self.hero.x == block_x:
                             ############UP MOVE

@@ -120,11 +120,7 @@ class Character(Unit):
             self.hp = 0
             self.death()
 
-    def get_destination(self, x, y):
-        if int(sqrt((self.x - x)**2 + (self.y - y)**2)) == 1:
-            return True
-        else:
-            return False
+
 
 
 

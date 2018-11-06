@@ -88,7 +88,6 @@ class FOV:
                              self.mult[0][oct], self.mult[1][oct],
                              self.mult[2][oct], self.mult[3][oct], 0)
 
-
     def display(self, X, Y):
         "Display the map on the given curses screen (utterly unoptimized)"
         for x in range(self.width):
@@ -100,6 +99,16 @@ class FOV:
                     ch = '@'
                 print(ch, end = '')
             print()
+
+    def find_in_fov(self, symbol):
+        for x in range(self.width):
+            for y in range(self.height):
+                ch = self.square(x, y)
+                if not self.lit(x, y):
+                    continue
+                if ch == symbol:
+                    return True, (x, y)
+        return False, None
 
 
 """

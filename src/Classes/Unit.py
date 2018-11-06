@@ -4,6 +4,7 @@ from src.Point.Point import Point
 from src.a_star_path_find import PathFinder
 from src.tile_list import *
 from src.FOV import FOV
+from math import sqrt
 
 
 class Unit(Object):
@@ -76,7 +77,32 @@ class Unit(Object):
     def set_protection(self, protection):
         self.protection = protection
 
+    def get_destination(self, x, y):
+        if int(sqrt((self.x - x)**2 + (self.y - y)**2)) == 1:
+            return True
+        else:
+            return False
 
+    def set_attack_direction(self, target_x, target_y):
+        if self.y - target_y == 1 and self.x == target_x:
+            ############UP ATTACK
+            self.falseAll()
+            self.attack_up = True
+
+        if self.y - target_y == -1 and self.x == target_x:
+            ############DOWN ATTACK
+            self.falseAll()
+            self.attack_down = True
+
+        if self.y == target_y and self.x - target_x == -1:
+            ############RIGHT ATTACK
+            self.falseAll()
+            self.attack_right = True
+
+        if self.y == target_y and self.x - target_x == 1:
+            ############LEFT ATTACK
+            self.falseAll()
+            self.attack_left = True
 
 
     def falseStay(self):
@@ -131,6 +157,7 @@ class Unit(Object):
 
 
     def build_path(self, to_x, to_y, forbidden_symb=None):
+        self.current_path.clear()
         if forbidden_symb is None:
             forbidden_symb = {WALL_TILE}
         temp_path = self.path_finder.find_path(Point(self.x, self.y), Point(to_x, to_y), forbidden_symb)
