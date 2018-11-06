@@ -3,7 +3,7 @@ from pygame.rect import Rect
 
 
 WIN_WIDTH = 1024
-WIN_HEIGHT = 680
+WIN_HEIGHT = 640
 DISPLAY = (WIN_WIDTH, WIN_HEIGHT)
 
 

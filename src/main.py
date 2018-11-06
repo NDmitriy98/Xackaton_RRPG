@@ -28,10 +28,17 @@ class Game:
         self.game_state = deepcopy(self.game_map.body)
         self.hero = Character.Character()
         self.inventory = Inventory.Inventory()
+        self.menu_show = True
+        self.game_start = False
         self.enemies = []
         self.step = True
         self.npc_step = False
         self.steps = 0
+        self.menu_background = pg.image.load('Drawable/menu_background.png')
+        self.menu_background_start = pg.image.load('Drawable/start_button.png')
+        self.menu_background_exit = pg.image.load('Drawable/exit_button.png')
+        pg.mixer_music.load('sound/background.wav')
+        pg.mixer_music.play()
 
     def new(self):  # Начало новой игры
 
@@ -81,6 +88,22 @@ class Game:
         self.set_enemies()
         self.update_state()
         # self.game_state.debug_print_map()
+
+    def menu(self):
+        while self.menu_show:
+            picture = pg.transform.scale(self.menu_background, (WIN_WIDTH, WIN_HEIGHT))
+            self.display.blit(self.menu_background, (0, 0))
+            pg.draw.rect(self.display, (0, 50, 50), (40, 30, 250, 100))
+            self.display.blit(self.menu_background_start, (40, 30))
+            self.display.blit(self.menu_background_exit, (40, 270))
+            self.menu_event()
+            pg.display.update()
+            self.clock.tick(30)
+        if not self.game_start:
+            pg.quit()
+            quit()
+
+
 
     def load_images(self):
         self.images = {}
@@ -261,6 +284,16 @@ class Game:
 
                 return True
         return False
+
+    def menu_event(self):
+        for event in pg.event.get():
+            if event.type == pg.MOUSEBUTTONDOWN:
+                mouse_position = pg.mouse.get_pos()
+                if 340 > mouse_position[0] > 40 and 140 > mouse_position[1] > 30:
+                    self.menu_show = False
+                    self.game_start = True
+                if 340 > mouse_position[0] > 40 and 380 > mouse_position[1] > 270:
+                    self.menu_show = False
 
     def npc_start(self):
         for enemy in self.enemies:
@@ -530,5 +563,6 @@ class Game:
 
 
 game = Game()
+game.menu()
 game.new()
 game.run()
